@@ -420,7 +420,7 @@ select.input{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xml
             </div>
             <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border)">
                 <div style="font-size:.78rem;color:var(--text-muted);line-height:1.8">
-                    <strong>猫猫基金宝 v3.2</strong><br>
+                    <strong>猫猫基金宝 v3.2.1</strong><br>
                     数据来源：天天基金网（fundgz.1234567.com.cn）<br>
                     估值仅供参考，实际以基金公司公布为准<br>
                     本地存储，数据不上传（图片识别除外）
@@ -428,7 +428,7 @@ select.input{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xml
             </div>
         </div>
     </div>
-    <div class="footer-bar">数据来源: 天天基金网 · 盘中为估值，收盘后自动更新实际净值 · 猫猫基金宝 v3.2</div>
+    <div class="footer-bar">数据来源: 天天基金网 · 盘中为估值，收盘后自动更新实际净值 · 猫猫基金宝 v3.2.1</div>
 </main>
 
 <div class="modal-bg" id="mBg"><div class="modal" id="mBody"></div></div>
@@ -523,7 +523,7 @@ const API = {
 
     async fetchDetail(code) { await J.load('https://fund.eastmoney.com/pingzhongdata/' + code + '.js?rt=' + Date.now()); const d = { name: window.fS_name || '', code: window.fS_code || code, syl_1n: window.syl_1n, syl_6y: window.syl_6y, syl_3y: window.syl_3y, syl_1y: window.syl_1y, nwTrend: window.Data_netWorthTrend || [], acTrend: window.Data_ACWorthTrend || [], sharesPos: window.Data_fundSharesPositions || [], rate: window.fund_Rate || '', srcRate: window.fund_sourceRate || '' }; if (window.stockCodesNew && window.stockNamesNew && window.stockPercentNew) { d.holdings = window.stockCodesNew.map((c, i) => ({ code: c, name: window.stockNamesNew[i] || '', pct: window.stockPercentNew[i] || 0 })); } return d; },
 
-    async fetchIntraday(code) { try { const data = await J.go(`https://api.fund.eastmoney.com/FundGuZhi/GetFundGZLSByCode.aspx?type=1&FundCode=${code}`, 'cb'); if (data?.Data?.GZLS) return data.Data.GZLS.map(item => ({ time: item.GZTIME, value: parseFloat(item.GSJZ), chg: parseFloat(item.GSZZL) })); } catch(e) {} return []; },
+    async fetchIntraday(code) { try { const cbName = '__mm_intra_' + code + '_' + Date.now(); const data = await J.go(`https://api.fund.eastmoney.com/FundGuZhi/GetFundGZLSByCode.aspx?type=1&FundCode=${code}&callback=${cbName}`, cbName); if (data?.Data?.GZLS) return data.Data.GZLS.map(item => ({ time: item.GZTIME, value: parseFloat(item.GSJZ), chg: parseFloat(item.GSZZL) })); } catch(e) {} return []; },
 
     async fetchFundInfo(code) { try { const data = await J.go(`https://fundmobapi.eastmoney.com/FundMApi/FundBaseTypeInformation.aspx?FCODE=${code}&deviceid=wap&plat=Wap&product=EFund&version=2.0.0`, 'cb'); if (data?.Datas) return { name: data.Datas.SHORTNAME || '', code: data.Datas.FCODE || code, type: data.Datas.FTYPE || '', company: data.Datas.JJGSNAME || '', manager: data.Datas.JJJL || '', scale: data.Datas.NETNAV || '', establishDate: data.Datas.ESTABDATE || '', buyRate: data.Datas.RATE || '', redeemRate: data.Datas.REDEEMRATE || '', benchmark: data.Datas.BENCHMARK || '' }; } catch(e) {} return null; },
 
@@ -541,7 +541,7 @@ const API = {
     async fetchHistNav(code, pageSize = 30) {
         try {
             const cbName = '__mm_hist_' + code + '_' + Date.now();
-            const data = await J.go(`https://api.fund.eastmoney.com/f10/lsjz?fundCode=${code}&pageIndex=1&pageSize=${pageSize}`, cbName);
+            const data = await J.go(`https://api.fund.eastmoney.com/f10/lsjz?fundCode=${code}&pageIndex=1&pageSize=${pageSize}&callback=${cbName}`, cbName);
             if (data?.Data?.LSJZList) {
                 return data.Data.LSJZList.map(item => ({
                     date: item.FSRQ,
@@ -557,7 +557,7 @@ const API = {
     // 板块行情
     async fetchSectorQuotes() {
         try {
-            const data = await J.go(`https://push2.eastmoney.com/api/qt/clist/get?pn=1&pz=30&fs=m:90+t:2&fields=f2,f3,f12,f14&fid=f3&po=1`, '__mm_sector');
+            const data = await J.go(`https://push2.eastmoney.com/api/qt/clist/get?pn=1&pz=30&fs=m:90+t:2&fields=f2,f3,f12,f14&fid=f3&po=1&cb=__mm_sector`, '__mm_sector');
             if (data?.data?.diff) {
                 return Object.values(data.data.diff).map(item => ({
                     code: item.f12, name: item.f14,
@@ -571,7 +571,8 @@ const API = {
     // 7×24快讯
     async fetchNews() {
         try {
-            const data = await J.go(`https://np-listapi.eastmoney.com/comm/web/getNewsByColumns?client=web&biz=web_news_col&column=350&order=1&needInteractData=0&page_index=1&page_size=20&req_trace=${Date.now()}`, '__mm_news');
+            const cbName = '__mm_news_' + Date.now();
+            const data = await J.go(`https://np-listapi.eastmoney.com/comm/web/getNewsByColumns?client=web&biz=web_news_col&column=350&order=1&needInteractData=0&page_index=1&page_size=20&req_trace=${Date.now()}&callback=${cbName}`, cbName);
             if (data?.data?.list) {
                 return data.data.list.map(item => ({
                     time: item.showTime || '', title: item.title || '',
@@ -796,6 +797,12 @@ const App = {
         S.allCodes().forEach(c => API.fetchSector(c).catch(() => {}));
         // 新手引导
         if (!localStorage.getItem('mm_onboarded')) this.showOnboarding();
+        // 自动备份提醒（每7天）
+        const lastBackup = localStorage.getItem('mm_last_backup');
+        if (lastBackup && Date.now() - parseInt(lastBackup) > 7 * 86400000) {
+            setTimeout(() => this.toast('💡 建议导出备份数据（设置→导出数据）', 'info'), 5000);
+        }
+        localStorage.setItem('mm_last_backup', Date.now().toString());
     },
 
     toggleTheme() { Theme.toggle(); },
@@ -1443,6 +1450,27 @@ const App = {
 };
 
 if ('serviceWorker' in navigator) { navigator.serviceWorker.register('sw.js').catch(() => {}); }
+
+/* 下拉刷新（移动端） */
+(function() {
+    let startY = 0, pulling = false;
+    const main = document.querySelector('.main');
+    if (!main) return;
+    main.addEventListener('touchstart', e => {
+        if (main.scrollTop <= 0) { startY = e.touches[0].clientY; pulling = true; }
+    }, { passive: true });
+    main.addEventListener('touchmove', e => {
+        if (!pulling) return;
+        const dy = e.touches[0].clientY - startY;
+        if (dy > 60 && main.scrollTop <= 0) {
+            pulling = false;
+            App.refreshAll();
+            App.refIdx();
+            App.toast('正在刷新...', 'info');
+        }
+    }, { passive: true });
+    main.addEventListener('touchend', () => { pulling = false; }, { passive: true });
+})();
 
 document.addEventListener('DOMContentLoaded', () => App.init());
 </script>
