@@ -12,6 +12,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
     <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 :root{
@@ -793,6 +794,8 @@ const App = {
         this.startAR();
         // 预加载板块信息
         S.allCodes().forEach(c => API.fetchSector(c).catch(() => {}));
+        // 新手引导
+        if (!localStorage.getItem('mm_onboarded')) this.showOnboarding();
     },
 
     toggleTheme() { Theme.toggle(); },
@@ -1112,6 +1115,47 @@ const App = {
         const body = document.getElementById('rankBody');
         body.innerHTML = '<div class="ld"><div class="ld-spin"></div></div>';
         try {
+            // 主API：基金排行
+            const data = await J.go('https://fundmobapi.eastmoney.com/FundMApi/FundRankList.aspx?SortColumn=SYL_1N&SortType=Desc&PageIndex=1&PageSize=20&MType=0&deviceid=wap&plat=Wap&product=EFund&version=2.0.0', '__mm_rank');
+            if (data?.Datas?.length) {
+                const items = data.Datas.map(item => ({ code: item.FCODE, name: item.SHORTNAME, type: item.FTYPE, chg_1y: item.SYL_1N, chg_3m: item.SYL_3Y, chg_1m: item.SYL_1Y }));
+                body.innerHTML = `<div class="rank-list">${items.map((item, i) => R.rankItem(item, i)).join('')}</div>`;
+                return;
+            }
+        } catch(e) {}
+        // 备用API
+        try {
+            const data2 = await J.go('https://fundmobapi.eastmoney.com/FundMApi/FundInFlowList.aspx?SortColumn=SYL_1N&SortType=Desc&PageIndex=1&PageSize=20&deviceid=wap&plat=Wap&product=EFund&version=2.0.0', '__mm_rank2');
+            if (data2?.Datas?.length) {
+                const items = data2.Datas.map(item => ({ code: item.FCODE, name: item.SHORTNAME, type: item.FTYPE, chg_1y: item.SYL_1Y, chg_3m: item.SYL_3Y, chg_1m: item.SYL_1Y }));
+                body.innerHTML = `<div class="rank-list">${items.map((item, i) => R.rankItem(item, i)).join('')}</div>`;
+                return;
+            }
+        } catch(e) {}
+        // 降级：用自选基金的历史收益排序
+        const codes = S.allCodes();
+        if (codes.length) {
+            const items = [];
+            for (const c of codes.slice(0, 20)) {
+                try {
+                    const hist = await API.fetchHistNav(c, 30);
+                    if (hist.length) {
+                        const chg_1m = hist.slice(0, 22).reduce((s, h) => s + h.chg, 0);
+                        items.push({ code: c, name: S.info[c]?.name || c, type: '', chg_1y: null, chg_3m: null, chg_1m: chg_1m.toFixed(2) });
+                    }
+                } catch(e) {}
+            }
+            items.sort((a, b) => parseFloat(b.chg_1m || 0) - parseFloat(a.chg_1m || 0));
+            if (items.length) {
+                body.innerHTML = `<div style="font-size:.72rem;color:var(--text-muted);margin-bottom:10px">基于你的自选基金近30日收益排行</div><div class="rank-list">${items.map((item, i) => R.rankItem(item, i)).join('')}</div>`;
+                return;
+            }
+        }
+        body.innerHTML = R.empty('📊', '暂无排行数据，请先添加基金到自选');
+    },sync loadRank() {
+        const body = document.getElementById('rankBody');
+        body.innerHTML = '<div class="ld"><div class="ld-spin"></div></div>';
+        try {
             // 使用天天基金排行数据
             const data = await J.go('https://fundmobapi.eastmoney.com/FundMApi/FundInFlowList.aspx?SortColumn=SYL_1N&SortType=Desc&PageIndex=1&PageSize=20&deviceid=wap&plat=Wap&product=EFund&version=2.0.0', 'cb');
             if (data?.Datas?.length) {
@@ -1348,9 +1392,51 @@ const App = {
     downloadShare() {
         const card = document.getElementById('shareCard');
         if (!card) return;
-        // 简单方案：用 html2canvas 或直接打印
-        this.toast('请使用浏览器截图功能保存（Ctrl+Shift+S）', 'info');
+        if (typeof html2canvas === 'undefined') { this.toast('图片库加载中，请稍后再试', 'info'); return; }
+        html2canvas(card, { backgroundColor: '#0a0f1a', scale: 2, useCORS: true }).then(canvas => {
+            const link = document.createElement('a');
+            link.download = `猫猫基金宝收益_${new Date().toISOString().slice(0, 10)}.png`;
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+            this.toast('图片已保存', 'success');
+        }).catch(() => this.toast('图片生成失败', 'error'));
     },
+
+    // 新手引导
+    showOnboarding() {
+        const steps = [
+            { icon: '🔍', title: '搜索基金', text: '在顶部搜索框输入基金代码、名称或拼音，找到你关注的基金' },
+            { icon: '⭐', title: '添加自选', text: '点击基金卡片上的「加自选」按钮，方便随时查看' },
+            { icon: '💼', title: '管理持仓', text: '点击「添加持仓」输入份额和成本，自动计算盈亏' },
+            { icon: '📊', title: '数据分析', text: '切换到「分析」标签，查看偏差分析、趋势图、板块行情' },
+            { icon: '📷', title: '图片导入', text: '在持仓页点击「📷 图片识别导入」，上传截图自动识别基金' },
+            { icon: '👁', title: '隐私模式', text: '点击右上角眼睛图标，一键隐藏所有金额' }
+        ];
+        let idx = 0;
+        const render = () => {
+            const s = steps[idx];
+            document.getElementById('mBody').innerHTML = `
+                <div style="text-align:center;padding:10px 0">
+                    <div style="font-size:2.5rem;margin-bottom:12px">${s.icon}</div>
+                    <div style="font-size:1.1rem;font-weight:600;margin-bottom:8px">${s.title}</div>
+                    <div style="font-size:.88rem;color:var(--text-secondary);line-height:1.6;margin-bottom:20px">${s.text}</div>
+                    <div style="display:flex;justify-content:center;gap:6px;margin-bottom:16px">${steps.map((_, i) => `<div style="width:8px;height:8px;border-radius:50%;background:${i === idx ? 'var(--accent)' : 'var(--border)'}"></div>`).join('')}</div>
+                    <div style="display:flex;gap:10px;justify-content:center">
+                        ${idx > 0 ? '<button class="btn" onclick="App._onboardPrev()">上一步</button>' : ''}
+                        ${idx < steps.length - 1 ? '<button class="btn btn-pri" onclick="App._onboardNext()">下一步</button>' : '<button class="btn btn-pri" onclick="App._onboardDone()">开始使用 🎉</button>'}
+                    </div>
+                    ${idx === 0 ? '<div style="margin-top:12px"><a style="font-size:.72rem;color:var(--text-muted);cursor:pointer" onclick="App._onboardDone()">跳过引导</a></div>' : ''}
+                </div>`;
+            document.getElementById('mBg').classList.add('open');
+        };
+        this._onboardIdx = 0;
+        this._onboardSteps = steps;
+        this._onboardRender = render;
+        render();
+    },
+    _onboardNext() { this._onboardIdx++; this._onboardRender(); },
+    _onboardPrev() { this._onboardIdx--; this._onboardRender(); },
+    _onboardDone() { localStorage.setItem('mm_onboarded', '1'); this.closeM(); },
 
     closeM() { document.getElementById('mBg').classList.remove('open'); },
     toast(msg, type = 'info') { const box = document.getElementById('tBox'), t = document.createElement('div'); t.className = 'toast ' + type; t.textContent = msg; box.appendChild(t); setTimeout(() => t.remove(), 3000); }
