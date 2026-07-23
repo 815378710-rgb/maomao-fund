@@ -356,8 +356,8 @@ select.input{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xml
             <div class="form-grp">
                 <label class="form-lbl">估值数据源优先级</label>
                 <div style="font-size:.82rem;color:var(--text-secondary);line-height:1.8">
-                    ① 天天基金（eastmoney）→ ② 金融界（jrj）→ ③ 好买基金（howbuy）<br>
-                    <span style="font-size:.72rem;color:var(--text-muted)">多源自动切换，确保数据可用性</span>
+                    天天基金（fundgz.1234567.com.cn）<br>
+                    <span style="font-size:.72rem;color:var(--text-muted)">自动重试，确保数据可用性</span>
                 </div>
             </div>
             <div class="form-grp">
@@ -373,14 +373,14 @@ select.input{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xml
             <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border)">
                 <div style="font-size:.78rem;color:var(--text-muted);line-height:1.8">
                     <strong>猫猫基金宝 v3.0</strong><br>
-                    数据来源：天天基金网 / 金融界 / 好买基金<br>
+                    数据来源：天天基金网（fundgz.1234567.com.cn）<br>
                     估值仅供参考，实际以基金公司公布为准<br>
                     本地存储，数据不上传（图片识别除外）
                 </div>
             </div>
         </div>
     </div>
-    <div class="footer-bar">数据来源: 天天基金网 / 金融界 / 好买基金 · 估值仅供参考，实际以基金公司公布为准 · 猫猫基金宝 v3.0</div>
+    <div class="footer-bar">数据来源: 天天基金网 · 估值仅供参考，实际以基金公司公布为准 · 猫猫基金宝 v3.0</div>
 </main>
 
 <div class="modal-bg" id="mBg"><div class="modal" id="mBody"></div></div>
@@ -435,8 +435,8 @@ const API = {
 
     fetchEst(code) { return new Promise((ok, no) => { this._q.push({ code, ok, no }); this._pq(); }); },
     async _pq() { if (this._busy || !this._q.length) return; this._busy = true; while (this._q.length) { const { code, ok, no } = this._q.shift(); try { const d = await this._fetchEstSource(code); ok(d); } catch(e) { no(e); } await new Promise(r => setTimeout(r, 100)); } this._busy = false; },
-    async _fetchEstSource(code) { const errs = []; for (const src of ['eastmoney', 'jrj']) { try { const d = await this._fetchEstSingle(code, src); if (d && d.gsz) return { ...d, _source: src }; } catch(e) { errs.push(src + ': ' + e.message); } } throw new Error('所有源失败'); },
-    _fetchEstSingle(code, src) { return new Promise((resolve, reject) => { const tm = setTimeout(() => reject(new Error('超时')), 8000); window.jsonpgz = data => { clearTimeout(tm); resolve(data); }; const s = document.createElement('script'); s.src = `https://fundgz.jrj.com.cn/js/${code}.js?rt=${Date.now()}`; s.onload = () => { if (s.parentNode) s.remove(); }; s.onerror = () => { clearTimeout(tm); reject(new Error('网络错误')); if (s.parentNode) s.remove(); }; document.head.appendChild(s); }); },
+    async _fetchEstSource(code) { // 带重试的估值获取 const maxRetry = 2; for (let i = 0; i <= maxRetry; i++) { try { const d = await this._fetchEstSingle(code); if (d && d.gsz) return { ...d, _source: 'eastmoney' }; } catch(e) { if (i === maxRetry) throw e; await new Promise(r => setTimeout(r, 500 * (i + 1))); } } throw new Error('估值获取失败'); },
+    _fetchEstSingle(code) { return new Promise((resolve, reject) => { const tm = setTimeout(() => reject(new Error('超时')), 8000); window.jsonpgz = data => { clearTimeout(tm); resolve(data); }; const s = document.createElement('script'); s.src = `http://fundgz.1234567.com.cn/js/${code}.js?rt=${Date.now()}`; s.onload = () => { if (s.parentNode) s.remove(); }; s.onerror = () => { clearTimeout(tm); reject(new Error('网络错误')); if (s.parentNode) s.remove(); }; document.head.appendChild(s); }); },
 
     validateEst(est) { if (!est) return null; const result = { ...est }; if (result.dwjz && result.gsz && !result.gszzl) { const dwjz = parseFloat(result.dwjz); const gsz = parseFloat(result.gsz); if (dwjz > 0) result.gszzl = ((gsz - dwjz) / dwjz * 100).toFixed(2); } if (result.dwjz && result.gsz && result.gszzl) { const dwjz = parseFloat(result.dwjz); const gsz = parseFloat(result.gsz); const expected = ((gsz - dwjz) / dwjz * 100); const actual = parseFloat(result.gszzl); if (Math.abs(expected - actual) > 0.5) { result._warn = '涨跌幅与净值不一致'; result.gszzl = expected.toFixed(2); } } if (result.gsz) result.gsz = parseFloat(result.gsz).toFixed(4); if (result.dwjz) result.dwjz = parseFloat(result.dwjz).toFixed(4); return result; },
 
@@ -822,22 +822,28 @@ const App = {
                 reader.readAsDataURL(file);
             });
 
-            // 调用MiMo API
-            const response = await fetch('https://api.xiaomimimo.com/v1/chat/completions', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
-                body: JSON.stringify({
-                    model: 'mimo-v2.5',
-                    messages: [{
-                        role: 'user',
-                        content: [
-                            { type: 'image_url', image_url: { url: base64 } },
-                            { type: 'text', text: '请从这张基金持仓截图中提取所有基金信息。返回JSON数组格式，每个元素包含：code(6位基金代码)、name(基金名称)、shares(持有份额数字)、cost(成本净值数字)、profit(盈亏金额数字)、chg(涨跌幅百分比数字)。只返回JSON数组，不要其他文字。如果某个字段看不到就返回null。' }
-                        ]
-                    }],
-                    max_tokens: 4096
-                })
-            });
+            // 调用MiMo API（处理CORS）
+            let response;
+            try {
+                response = await fetch('https://api.xiaomimimo.com/v1/chat/completions', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
+                    body: JSON.stringify({
+                        model: 'mimo-v2.5',
+                        messages: [{
+                            role: 'user',
+                            content: [
+                                { type: 'image_url', image_url: { url: base64 } },
+                                { type: 'text', text: '请从这张基金持仓截图中提取所有基金信息。返回JSON数组格式，每个元素包含：code(6位基金代码)、name(基金名称)、shares(持有份额数字)、cost(成本净值数字)、profit(盈亏金额数字)、chg(涨跌幅百分比数字)。只返回JSON数组，不要其他文字。如果某个字段看不到就返回null。' }
+                            ]
+                        }],
+                        max_tokens: 4096
+                    })
+                });
+            } catch(corsErr) {
+                // CORS被阻止，尝试通过后端代理
+                throw new Error('API请求被浏览器安全策略阻止(CORS)。请确保 MiMo API 支持跨域请求，或通过后端代理调用。');
+            }
 
             if (!response.ok) throw new Error(`API请求失败: ${response.status}`);
             const data = await response.json();
@@ -918,7 +924,7 @@ const App = {
     toast(msg, type = 'info') { const box = document.getElementById('tBox'), t = document.createElement('div'); t.className = 'toast ' + type; t.textContent = msg; box.appendChild(t); setTimeout(() => t.remove(), 3000); }
 };
 
-if ('serviceWorker' in navigator) { const swCode = `const C='maomao-v3';self.addEventListener('install',e=>{self.skipWaiting()});self.addEventListener('activate',e=>{self.clients.claim()});self.addEventListener('fetch',e=>{if(e.request.url.includes('fund.eastmoney.com')||e.request.url.includes('jrj.com.cn')||e.request.url.includes('push2.eastmoney.com')||e.request.url.includes('xiaomimimo.com')){e.respondWith(fetch(e.request).catch(()=>caches.match(e.request)))}else{e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request)))}})`; const blob = new Blob([swCode], { type: 'application/javascript' }); navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(() => {}); }
+if ('serviceWorker' in navigator) { navigator.serviceWorker.register('sw.js').catch(() => {}); }
 
 document.addEventListener('DOMContentLoaded', () => App.init());
 </script>
