@@ -174,6 +174,8 @@ select.input{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xml
 .tag-sector{background:rgba(99,132,255,0.1);color:var(--accent-bright);font-size:.65rem;padding:1px 6px;cursor:pointer}
 .tag-sector:hover{background:rgba(99,132,255,0.2)}
 .tag-hold{background:rgba(16,185,129,0.12);color:var(--loss-bright);font-size:.65rem;padding:1px 6px}
+.tag-est{background:rgba(239,68,68,0.1);color:var(--gain-bright);font-size:.6rem;padding:1px 6px;font-weight:500}
+.tag-actual{background:rgba(16,185,129,0.12);color:var(--loss-bright);font-size:.6rem;padding:1px 6px;font-weight:500}
 .flex-r{display:flex;align-items:center;gap:8px}
 .flex-b{display:flex;justify-content:space-between;align-items:center}
 .text-gain{color:var(--gain-bright)!important}
@@ -372,7 +374,7 @@ select.input{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xml
             </div>
             <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border)">
                 <div style="font-size:.78rem;color:var(--text-muted);line-height:1.8">
-                    <strong>猫猫基金宝 v3.0</strong><br>
+                    <strong>猫猫基金宝 v3.1</strong><br>
                     数据来源：天天基金网（fundgz.1234567.com.cn）<br>
                     估值仅供参考，实际以基金公司公布为准<br>
                     本地存储，数据不上传（图片识别除外）
@@ -380,7 +382,7 @@ select.input{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xml
             </div>
         </div>
     </div>
-    <div class="footer-bar">数据来源: 天天基金网 · 估值仅供参考，实际以基金公司公布为准 · 猫猫基金宝 v3.0</div>
+    <div class="footer-bar">数据来源: 天天基金网 · 盘中为估值，收盘后自动更新实际净值 · 猫猫基金宝 v3.1</div>
 </main>
 
 <div class="modal-bg" id="mBg"><div class="modal" id="mBody"></div></div>
@@ -438,7 +440,40 @@ const API = {
     async _fetchEstSource(code) { // 带重试的估值获取 const maxRetry = 2; for (let i = 0; i <= maxRetry; i++) { try { const d = await this._fetchEstSingle(code); if (d && d.gsz) return { ...d, _source: 'eastmoney' }; } catch(e) { if (i === maxRetry) throw e; await new Promise(r => setTimeout(r, 500 * (i + 1))); } } throw new Error('估值获取失败'); },
     _fetchEstSingle(code) { return new Promise((resolve, reject) => { const tm = setTimeout(() => reject(new Error('超时')), 8000); window.jsonpgz = data => { clearTimeout(tm); resolve(data); }; const s = document.createElement('script'); s.src = `http://fundgz.1234567.com.cn/js/${code}.js?rt=${Date.now()}`; s.onload = () => { if (s.parentNode) s.remove(); }; s.onerror = () => { clearTimeout(tm); reject(new Error('网络错误')); if (s.parentNode) s.remove(); }; document.head.appendChild(s); }); },
 
-    validateEst(est) { if (!est) return null; const result = { ...est }; if (result.dwjz && result.gsz && !result.gszzl) { const dwjz = parseFloat(result.dwjz); const gsz = parseFloat(result.gsz); if (dwjz > 0) result.gszzl = ((gsz - dwjz) / dwjz * 100).toFixed(2); } if (result.dwjz && result.gsz && result.gszzl) { const dwjz = parseFloat(result.dwjz); const gsz = parseFloat(result.gsz); const expected = ((gsz - dwjz) / dwjz * 100); const actual = parseFloat(result.gszzl); if (Math.abs(expected - actual) > 0.5) { result._warn = '涨跌幅与净值不一致'; result.gszzl = expected.toFixed(2); } } if (result.gsz) result.gsz = parseFloat(result.gsz).toFixed(4); if (result.dwjz) result.dwjz = parseFloat(result.dwjz).toFixed(4); return result; },
+    validateEst(est) {
+        if (!est) return null;
+        const result = { ...est };
+        // 判断是估值还是实际净值
+        const today = new Date();
+        const todayStr = today.getFullYear() + '-' + U.pad(today.getMonth() + 1) + '-' + U.pad(today.getDate());
+        result._isActual = false;
+        if (result.jzrq) {
+            // jzrq是净值日期，如果等于今天，说明基金公司已公布实际净值
+            const jzrq = result.jzrq.split(' ')[0]; // 取日期部分
+            if (jzrq === todayStr) {
+                result._isActual = true;
+            }
+        }
+        // 校验净值和涨跌幅的一致性
+        if (result.dwjz && result.gsz && !result.gszzl) {
+            const dwjz = parseFloat(result.dwjz);
+            const gsz = parseFloat(result.gsz);
+            if (dwjz > 0) result.gszzl = ((gsz - dwjz) / dwjz * 100).toFixed(2);
+        }
+        if (result.dwjz && result.gsz && result.gszzl) {
+            const dwjz = parseFloat(result.dwjz);
+            const gsz = parseFloat(result.gsz);
+            const expected = ((gsz - dwjz) / dwjz * 100);
+            const actual = parseFloat(result.gszzl);
+            if (Math.abs(expected - actual) > 0.5) {
+                result._warn = '涨跌幅与净值不一致';
+                result.gszzl = expected.toFixed(2);
+            }
+        }
+        if (result.gsz) result.gsz = parseFloat(result.gsz).toFixed(4);
+        if (result.dwjz) result.dwjz = parseFloat(result.dwjz).toFixed(4);
+        return result;
+    },
 
     async fetchDetail(code) { await J.load('https://fund.eastmoney.com/pingzhongdata/' + code + '.js?rt=' + Date.now()); const d = { name: window.fS_name || '', code: window.fS_code || code, syl_1n: window.syl_1n, syl_6y: window.syl_6y, syl_3y: window.syl_3y, syl_1y: window.syl_1y, nwTrend: window.Data_netWorthTrend || [], acTrend: window.Data_ACWorthTrend || [], sharesPos: window.Data_fundSharesPositions || [], rate: window.fund_Rate || '', srcRate: window.fund_sourceRate || '' }; if (window.stockCodesNew && window.stockNamesNew && window.stockPercentNew) { d.holdings = window.stockCodesNew.map((c, i) => ({ code: c, name: window.stockNamesNew[i] || '', pct: window.stockPercentNew[i] || 0 })); } return d; },
 
@@ -536,15 +571,18 @@ const R = {
               ct = gz != null ? U.fp(gz) : '--', dwj = est?.dwjz || '--',
               gt = est?.gztime || '--', iw = S.isWl(code);
         const fresh = U.freshness(gt);
+        const isActual = est?._isActual;
+        const valueLabel = isActual ? '净值' : '估值';
+        const valueLabelCls = isActual ? 'tag-actual' : 'tag-est';
         const sourceLabel = est?._source ? `<span class="tag" style="font-size:.6rem">${est._source}</span>` : '';
         const sectors = API._sectors[code] || [];
         const sectorTags = sectors.map(s => `<span class="tag-sector">${s}</span>`).join('');
         const isHold = S.pf.some(h => h.code === code);
         return `<div class="fcard" onclick="App.view('${code}')">
-            <div class="fcard-top"><div><div class="fcard-name">${nm}${isHold ? ' <span class="tag-hold">持有</span>' : ''}</div><div class="fcard-code">${code} ${sourceLabel}</div></div>
+            <div class="fcard-top"><div><div class="fcard-name">${nm}${isHold ? ' <span class="tag-hold">持有</span>' : ''} <span class="${valueLabelCls}">${valueLabel}</span></div><div class="fcard-code">${code} ${sourceLabel}</div></div>
             <div class="fcard-est"><div class="fcard-gs ${U.gcl(gz)}">${Privacy.mask(gsz)}</div><div class="fcard-chg ${gc}">${ct}</div></div></div>
             ${sectorTags ? `<div class="fcard-tags">${sectorTags}</div>` : ''}
-            <div class="fcard-meta"><span>昨日净值 ${Privacy.mask(dwj)}</span><span class="fcard-fresh"><span class="dot ${fresh.cls}"></span>${fresh.label} · ${U.formatTime(gt)}</span></div>
+            <div class="fcard-meta"><span>${isActual ? '今日净值' : '昨日净值'} ${Privacy.mask(dwj)}</span><span class="fcard-fresh"><span class="dot ${fresh.cls}"></span>${fresh.label} · ${U.formatTime(gt)}</span></div>
             ${est?._warn ? `<div style="font-size:.68rem;color:var(--gain);margin-top:4px">⚠️ ${est._warn}</div>` : ''}
             ${acts ? `<div class="fcard-acts" onclick="event.stopPropagation()">
                 <button class="btn btn-sm ${iw ? 'btn-danger' : ''}" onclick="App.togWl('${code}','${nm.replace(/'/g, "\\'")}')">${iw ? '取消自选' : '加自选'}</button>
@@ -557,6 +595,9 @@ const R = {
     detail(code, est, det, info, rank) {
         const nm = det?.name || est?.name || info?.name || '未知基金', gsz = est?.gsz || '--', gz = est?.gszzl, gc = U.gc(gz), ct = gz != null ? U.fp(gz) : '--', iw = S.isWl(code);
         const fresh = U.freshness(est?.gztime);
+        const isActual = est?._isActual;
+        const valueLabel = isActual ? '✅ 今日净值' : '⏳ 盘中估值';
+        const valueLabelColor = isActual ? 'var(--loss-bright)' : 'var(--gain-bright)';
         let perf = ''; if (det) { [{ l: '近1月', v: det.syl_1y }, { l: '近3月', v: det.syl_3y }, { l: '近6月', v: det.syl_6y }, { l: '近1年', v: det.syl_1n }].forEach(m => { if (m.v != null && m.v !== '') perf += `<div class="det-stat"><div class="det-stat-lbl">${m.l}</div><div class="det-stat-val ${U.gcl(m.v)}">${U.fp(m.v)}</div></div>`; }); }
         let fundInfo = ''; if (info) { fundInfo += `<div class="det-stat"><div class="det-stat-lbl">基金类型</div><div class="det-stat-val">${info.type || '--'}</div></div>`; fundInfo += `<div class="det-stat"><div class="det-stat-lbl">基金公司</div><div class="det-stat-val" style="font-size:.82rem">${info.company || '--'}</div></div>`; fundInfo += `<div class="det-stat"><div class="det-stat-lbl">基金经理</div><div class="det-stat-val">${info.manager || '--'}</div></div>`; fundInfo += `<div class="det-stat"><div class="det-stat-lbl">基金规模</div><div class="det-stat-val">${info.scale ? info.scale + '亿' : '--'}</div></div>`; fundInfo += `<div class="det-stat"><div class="det-stat-lbl">成立日期</div><div class="det-stat-val">${info.establishDate || '--'}</div></div>`; fundInfo += `<div class="det-stat"><div class="det-stat-lbl">申购费率</div><div class="det-stat-val" style="font-size:.78rem">${info.buyRate || '--'}</div></div>`; }
         const sectors = API._sectors[code] || [];
@@ -565,15 +606,15 @@ const R = {
         let hold = ''; if (det?.holdings?.length) { hold = `<div class="det-stat" style="grid-column:1/-1"><div class="det-stat-lbl">前十大持仓</div><div class="hold-list">${det.holdings.slice(0, 10).map((h, i) => `<div class="hold-row"><span style="color:var(--text-muted);min-width:20px">${i + 1}.</span><span style="flex:1">${h.name}</span><span class="hold-pct">${typeof h.pct === 'number' ? h.pct.toFixed(2) + '%' : '--'}</span></div>`).join('')}</div></div>`; }
         return `<div class="det-head"><div><div class="det-name">${nm}</div><div class="det-code">${code} ${info?.type ? '· ' + info.type : ''} ${sectors.length ? '· ' + sectors.join('/') : ''}</div></div>
             <div class="det-price"><div class="det-val ${U.gcl(gz)}">${Privacy.mask(gsz)}</div><div class="det-chg fcard-chg ${gc}">${ct}</div>
-            <div style="font-size:.72rem;color:var(--text-muted);margin-top:4px">昨日净值 ${Privacy.mask(est?.dwjz || '--')} · <span class="fcard-fresh"><span class="dot ${fresh.cls}"></span>${fresh.label}</span></div></div></div>
+            <div style="font-size:.72rem;margin-top:4px"><span style="color:${valueLabelColor};font-weight:500">${valueLabel}</span> · <span class="fcard-fresh"><span class="dot ${fresh.cls}"></span>${fresh.label}</span></div></div></div>
             <div class="flex-r" style="margin-bottom:14px;gap:8px;flex-wrap:wrap">
                 <button class="btn btn-sm ${iw ? 'btn-danger' : 'btn-pri'}" onclick="App.togWl('${code}','${nm.replace(/'/g, "\\'")}')">${iw ? '★ 已自选' : '☆ 加自选'}</button>
                 <button class="btn btn-sm" onclick="App.modalHold('${code}')">添加持仓</button>
                 <button class="btn btn-sm" onclick="App.refOne('${code}')">刷新估值</button>
             </div>
             <div class="det-grid">
-                <div class="det-stat"><div class="det-stat-lbl">昨日净值</div><div class="det-stat-val">${Privacy.mask(est?.dwjz || '--')}</div></div>
-                <div class="det-stat"><div class="det-stat-lbl">实时估值</div><div class="det-stat-val ${U.gcl(gz)}">${Privacy.mask(gsz)}</div></div>
+                <div class="det-stat"><div class="det-stat-lbl">${isActual ? '今日净值' : '昨日净值'}</div><div class="det-stat-val">${Privacy.mask(est?.dwjz || '--')}</div></div>
+                <div class="det-stat"><div class="det-stat-lbl">${isActual ? '今日净值' : '实时估值'}</div><div class="det-stat-val ${U.gcl(gz)}">${Privacy.mask(gsz)}</div></div>
                 <div class="det-stat"><div class="det-stat-lbl">估算涨跌</div><div class="det-stat-val ${U.gcl(gz)}">${ct}</div></div>
                 ${perf}${fundInfo}${rankInfo}${hold}
             </div>
@@ -684,9 +725,58 @@ const App = {
     async _getDetail(code) { if (this._detCache[code]) return this._detCache[code]; try { const d = await API.fetchDetail(code); this._detCache[code] = d; return d; } catch(e) { return null; } },
     async loadCh(code, type, tab) { if (tab) { tab.parentElement.querySelectorAll('.ch-tab').forEach(x => x.classList.remove('active')); tab.classList.add('active'); } if (type === 'intra') { let data = S.getIntraday(code); if (data.length < 5) { try { const apiData = await API.fetchIntraday(code); if (apiData.length > data.length) data = apiData; } catch(e) {} } Ch.intraday('cArea', data); } else { let det = this._detCache[code]; if (!det) det = await this._getDetail(code); if (!det) return; const data = type === 'ac' ? det.acTrend : det.nwTrend; if (data?.length) Ch.nw('cArea', data); } },
     async refOne(code) { try { const d = await API.fetchEst(code); const validated = API.validateEst(d); S.upEst(code, validated); this.renderDash(); this.renderWatch(); if (this._curCode === code) this.view(code); } catch(e) { this.toast('刷新失败', 'error'); } },
-    async refreshAll() { const codes = S.allCodes(); if (!codes.length) return; document.getElementById('rfrDot').classList.add('on'); document.getElementById('rfrLbl').textContent = '刷新中...'; let ok = 0; for (const c of codes) { try { const d = await API.fetchEst(c); const validated = API.validateEst(d); S.upEst(c, validated); S.info[c] = { name: validated.name, ...(S.info[c] || {}) }; API.fetchSector(c).catch(() => {}); ok++; } catch(e) {} } this.renderDash(); this.renderWatch(); this.renderPort(); document.getElementById('rfrLbl').textContent = U.trading() ? `交易中 · ${ok}/${codes.length}` : `已收盘 · ${ok}/${codes.length}`; },
+    async refreshAll() {
+        const codes = S.allCodes(); if (!codes.length) return;
+        document.getElementById('rfrDot').classList.add('on');
+        document.getElementById('rfrLbl').textContent = '刷新中...';
+        // 记录刷新前的净值状态
+        const prevActual = {};
+        codes.forEach(c => { prevActual[c] = S.getEst(c)?._isActual || false; });
+        let ok = 0;
+        for (const c of codes) {
+            try {
+                const d = await API.fetchEst(c);
+                const validated = API.validateEst(d);
+                S.upEst(c, validated);
+                S.info[c] = { name: validated.name, ...(S.info[c] || {}) };
+                API.fetchSector(c).catch(() => {});
+                ok++;
+            } catch(e) {}
+        }
+        // 检查是否有基金从估值变为实际净值
+        let newActualCnt = 0;
+        codes.forEach(c => {
+            const now = S.getEst(c)?._isActual || false;
+            if (now && !prevActual[c]) newActualCnt++;
+        });
+        if (newActualCnt > 0) {
+            this.toast(`🎉 ${newActualCnt} 只基金已更新今日实际净值`, 'success');
+        }
+        this.renderDash(); this.renderWatch(); this.renderPort(); document.getElementById('rfrLbl').textContent = U.trading() ? `交易中 · ${ok}/${codes.length} 估值` : (() => { const actualCnt = codes.filter(c => S.getEst(c)?._isActual).length; if (actualCnt > 0 && actualCnt < codes.length) return `已收盘 · ${actualCnt}/${codes.length} 已更新净值`; if (actualCnt === codes.length && codes.length > 0) return '已收盘 · 全部净值已更新'; return `已收盘 · ${ok}/${codes.length}`; })(); },
     async refIdx() { try { const d = await API.fetchIdx(); document.getElementById('ticker').innerHTML = d.length ? R.ticker(d) : '<div class="tk-item"><span class="tk-name">市场数据暂时不可用</span></div>'; } catch(e) {} },
-    startAR() { this.stopAR(); const tick = () => { this.refreshAll(); this.refIdx(); const next = this.getRefreshInterval(); if (next && document.getElementById('autoRef')?.checked) this._rt = setTimeout(tick, next); }; const first = this.getRefreshInterval(); if (first) this._rt = setTimeout(tick, first); document.getElementById('rfrDot').classList.add('on'); },
+    startAR() {
+        this.stopAR();
+        const tick = () => {
+            this.refreshAll();
+            this.refIdx();
+            // [收盘后净值更新] 15:00-22:00之间，每5分钟检查实际净值
+            const now = new Date();
+            const h = now.getHours(), m = now.getMinutes();
+            const isPostClose = U.trading() === false && (h >= 15 && h < 22) && now.getDay() >= 1 && now.getDay() <= 5;
+            let next;
+            if (isPostClose) {
+                // 收盘后：检查是否所有基金都已拿到实际净值
+                const allActual = S.allCodes().every(c => { const e = S.getEst(c); return e?._isActual; });
+                next = allActual ? 1800000 : 300000; // 全部拿到→30分钟，否则→5分钟
+            } else {
+                next = this.getRefreshInterval();
+            }
+            if (next && document.getElementById('autoRef')?.checked) this._rt = setTimeout(tick, next);
+        };
+        const first = this.getRefreshInterval();
+        if (first) this._rt = setTimeout(tick, first);
+        document.getElementById('rfrDot').classList.add('on');
+    },
     stopAR() { if (this._rt) { clearTimeout(this._rt); this._rt = null; } },
     clock() { const u = () => { const n = new Date(); document.getElementById('clock').textContent = `${n.getFullYear()}-${U.pad(n.getMonth() + 1)}-${U.pad(n.getDate())} ${U.pad(n.getHours())}:${U.pad(n.getMinutes())}:${U.pad(n.getSeconds())}`; }; u(); this._ct = setInterval(u, 1000); },
 
