@@ -13,7 +13,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
     <style>
-/* ====== THEME SYSTEM ====== */
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 :root{
     --bg-deep:#050810;--bg-primary:#0a0f1a;--bg-secondary:#0f1525;
@@ -45,12 +44,11 @@ html.light{
 html{font-size:14px;-webkit-font-smoothing:antialiased}
 body{font-family:var(--font-body);background:var(--bg-deep);color:var(--text-primary);min-height:100vh;overflow-x:hidden}
 body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 15% 20%,rgba(99,132,255,0.04) 0%,transparent 50%),radial-gradient(ellipse at 85% 80%,rgba(239,68,60,0.025) 0%,transparent 50%);pointer-events:none;z-index:0}
-html.light body::before{background:radial-gradient(ellipse at 15% 20%,rgba(99,132,255,0.03) 0%,transparent 50%)}
+html.light body::before{background:none}
 ::-webkit-scrollbar{width:5px;height:5px}
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:var(--border-hover);border-radius:3px}
 
-/* Header */
 .header{position:fixed;top:0;left:0;right:0;height:var(--header-h);background:rgba(10,15,26,0.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 20px;gap:16px;z-index:100}
 html.light .header{background:rgba(255,255,255,0.92)}
 .logo{font-family:var(--font-display);font-size:1.25rem;font-weight:800;letter-spacing:-0.02em;white-space:nowrap;cursor:pointer}
@@ -74,35 +72,32 @@ html.light .header{background:rgba(255,255,255,0.92)}
 .sr-code{font-family:var(--font-mono);color:var(--accent-bright);font-size:.82rem;min-width:60px}
 .sr-name{flex:1;font-size:.88rem}
 .sr-type{font-size:.7rem;color:var(--text-muted);background:var(--bg-secondary);padding:2px 8px;border-radius:4px;white-space:nowrap}
-.hdr-right{display:flex;align-items:center;gap:14px;margin-left:auto}
+.hdr-right{display:flex;align-items:center;gap:10px;margin-left:auto}
 .hdr-btn{width:32px;height:32px;border-radius:var(--radius);border:1px solid var(--border);background:var(--bg-secondary);color:var(--text-secondary);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.9rem;transition:all .2s}
 .hdr-btn:hover{background:var(--bg-hover);color:var(--text-primary);border-color:var(--border-hover)}
+.hdr-btn.active{color:var(--accent-bright);border-color:var(--accent);background:var(--accent-glow)}
 .hdr-clock{font-family:var(--font-mono);font-size:.78rem;color:var(--text-secondary);white-space:nowrap}
 .rfr-status{display:flex;align-items:center;gap:6px;font-size:.72rem;color:var(--text-muted)}
 .rfr-dot{width:6px;height:6px;border-radius:50%;background:var(--text-muted);transition:background .3s}
 .rfr-dot.on{background:var(--gain);animation:pulse 2s infinite}
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
 
-/* Ticker */
 .ticker{position:fixed;top:var(--header-h);left:0;right:0;height:var(--ticker-h);background:var(--bg-primary);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 20px;gap:28px;z-index:90;overflow-x:auto;white-space:nowrap}
 .tk-item{display:flex;align-items:center;gap:8px;font-size:.78rem;flex-shrink:0}
 .tk-name{color:var(--text-secondary)}
 .tk-price{font-family:var(--font-mono);font-weight:500}
 .tk-chg{font-family:var(--font-mono);font-size:.72rem}
 
-/* Nav */
 .navbar{position:fixed;top:calc(var(--header-h) + var(--ticker-h));left:0;right:0;height:var(--nav-h);background:var(--bg-primary);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 20px;gap:4px;z-index:80}
 .ntab{padding:8px 18px;font-size:.85rem;color:var(--text-secondary);cursor:pointer;border-radius:var(--radius);transition:all .2s;white-space:nowrap;font-weight:500;border:none;background:none;font-family:var(--font-body)}
 .ntab:hover{color:var(--text-primary);background:var(--bg-hover)}
 .ntab.active{color:var(--accent-bright);background:var(--accent-glow)}
 
-/* Main */
 .main{margin-top:calc(var(--header-h) + var(--ticker-h) + var(--nav-h));padding:20px;min-height:calc(100vh - var(--header-h) - var(--ticker-h) - var(--nav-h));position:relative;z-index:1}
 .tcont{display:none;animation:fadeUp .3s ease}
 .tcont.active{display:block}
 @keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 
-/* Cards */
 .card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:20px;transition:border-color .2s}
 .card:hover{border-color:var(--border-hover)}
 .sec-title{font-family:var(--font-display);font-size:1.05rem;font-weight:700;display:flex;align-items:center;gap:8px}
@@ -127,8 +122,8 @@ html.light .header{background:rgba(255,255,255,0.92)}
 .fcard-fresh .dot.fresh{background:var(--loss)}
 .fcard-fresh .dot.stale{background:var(--gain)}
 .fcard-acts{display:flex;gap:6px;margin-top:10px}
+.fcard-tags{display:flex;gap:4px;flex-wrap:wrap;margin-top:6px}
 
-/* Buttons */
 .btn{padding:6px 14px;border-radius:var(--radius);font-size:.8rem;font-family:var(--font-body);font-weight:500;cursor:pointer;border:1px solid var(--border);background:var(--bg-secondary);color:var(--text-secondary);transition:all .2s;white-space:nowrap;display:inline-flex;align-items:center;gap:4px}
 .btn:hover{background:var(--bg-hover);color:var(--text-primary);border-color:var(--border-hover)}
 .btn-pri{background:var(--accent);color:#fff;border-color:var(--accent)}
@@ -137,7 +132,6 @@ html.light .header{background:rgba(255,255,255,0.92)}
 .btn-danger:hover{background:var(--gain-bg)}
 .btn-sm{padding:4px 10px;font-size:.72rem}
 
-/* Inputs */
 .input{height:36px;background:var(--bg-input);border:1px solid var(--border);border-radius:var(--radius);padding:0 12px;font-family:var(--font-mono);font-size:.85rem;color:var(--text-primary);outline:none;width:100%;transition:border-color .2s,box-shadow .2s}
 .input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-glow)}
 .input::placeholder{color:var(--text-muted)}
@@ -145,7 +139,6 @@ html.light .header{background:rgba(255,255,255,0.92)}
 .form-lbl{display:block;font-size:.78rem;color:var(--text-secondary);margin-bottom:6px}
 select.input{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%238892a8' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:28px}
 
-/* Detail */
 .det-head{display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:16px;margin-bottom:20px}
 .det-name{font-family:var(--font-display);font-size:1.5rem;font-weight:800;letter-spacing:-0.02em}
 .det-code{font-family:var(--font-mono);font-size:.82rem;color:var(--text-muted);margin-top:4px}
@@ -162,7 +155,6 @@ select.input{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xml
 .ch-tab:hover{color:var(--text-primary);background:var(--bg-hover)}
 .ch-tab.active{color:var(--accent-bright);background:var(--accent-glow)}
 
-/* Portfolio */
 .pf-summary{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px;margin-bottom:24px}
 .pf-card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:16px 18px}
 .pf-card-lbl{font-size:.72rem;color:var(--text-muted);margin-bottom:6px}
@@ -173,16 +165,15 @@ select.input{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xml
 .pf-table tr:last-child td{border-bottom:none}
 .pf-table tr:hover td{background:var(--bg-hover)}
 .tbl-num{font-family:var(--font-mono)}
-
-/* Holdings detail */
 .hold-list{margin-top:10px}
 .hold-row{display:flex;align-items:center;gap:8px;padding:6px 0;border-bottom:1px solid var(--border);font-size:.82rem}
 .hold-row:last-child{border-bottom:none}
 .hold-pct{font-family:var(--font-mono);color:var(--accent-bright);min-width:50px;text-align:right}
 
-/* Tags */
 .tag{display:inline-block;padding:2px 8px;font-size:.68rem;border-radius:4px;background:var(--bg-secondary);color:var(--text-muted)}
-.tag-accent{color:var(--accent-bright);background:var(--accent-glow)}
+.tag-sector{background:rgba(99,132,255,0.1);color:var(--accent-bright);font-size:.65rem;padding:1px 6px;cursor:pointer}
+.tag-sector:hover{background:rgba(99,132,255,0.2)}
+.tag-hold{background:rgba(16,185,129,0.12);color:var(--loss-bright);font-size:.65rem;padding:1px 6px}
 .flex-r{display:flex;align-items:center;gap:8px}
 .flex-b{display:flex;justify-content:space-between;align-items:center}
 .text-gain{color:var(--gain-bright)!important}
@@ -190,13 +181,46 @@ select.input{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xml
 .text-flat{color:var(--flat)!important}
 .text-muted{color:var(--text-muted)!important}
 .mono{font-family:var(--font-mono)}
+.privacy-mask{filter:blur(6px);user-select:none;pointer-events:none}
 
-/* Empty */
+/* 流入榜 */
+.rank-list{display:flex;flex-direction:column;gap:8px}
+.rank-item{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:14px 18px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:all .2s}
+.rank-item:hover{border-color:var(--border-hover);transform:translateY(-1px)}
+.rank-num{font-family:var(--font-mono);font-size:1.1rem;font-weight:700;min-width:28px;text-align:center}
+.rank-num.top1{color:#ffd700}
+.rank-num.top2{color:#c0c0c0}
+.rank-num.top3{color:#cd7f32}
+.rank-info{flex:1}
+.rank-name{font-size:.88rem;font-weight:500}
+.rank-code{font-family:var(--font-mono);font-size:.72rem;color:var(--text-muted)}
+.rank-data{text-align:right}
+.rank-amount{font-family:var(--font-mono);font-size:.95rem;font-weight:500;color:var(--gain-bright)}
+.rank-chg{font-family:var(--font-mono);font-size:.72rem;color:var(--text-muted)}
+
+/* 账户选择器 */
+.account-bar{display:flex;align-items:center;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.account-tab{padding:6px 14px;font-size:.8rem;border-radius:var(--radius);border:1px solid var(--border);background:var(--bg-secondary);color:var(--text-secondary);cursor:pointer;transition:all .2s;font-family:var(--font-body)}
+.account-tab:hover{border-color:var(--border-hover);color:var(--text-primary)}
+.account-tab.active{border-color:var(--accent);color:var(--accent-bright);background:var(--accent-glow)}
+.account-add{padding:6px 10px;font-size:.8rem;border-radius:var(--radius);border:1px dashed var(--border);background:none;color:var(--text-muted);cursor:pointer;transition:all .2s}
+.account-add:hover{border-color:var(--accent);color:var(--accent-bright)}
+
+/* 图片识别区域 */
+.ocr-zone{border:2px dashed var(--border);border-radius:var(--radius-lg);padding:30px;text-align:center;cursor:pointer;transition:all .2s;margin-bottom:16px}
+.ocr-zone:hover{border-color:var(--accent);background:var(--accent-glow)}
+.ocr-zone.dragover{border-color:var(--accent);background:var(--accent-glow)}
+.ocr-icon{font-size:2rem;margin-bottom:8px;opacity:.6}
+.ocr-txt{font-size:.82rem;color:var(--text-muted)}
+.ocr-result{background:var(--bg-secondary);border-radius:var(--radius);padding:14px;margin-top:12px;font-size:.82rem;max-height:200px;overflow-y:auto}
+.ocr-item{display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid var(--border)}
+.ocr-item:last-child{border-bottom:none}
+.ocr-check{accent-color:var(--accent)}
+
 .empty{text-align:center;padding:50px 20px;color:var(--text-muted)}
 .empty-icon{font-size:2.2rem;margin-bottom:10px;opacity:.5}
 .empty-txt{font-size:.88rem;margin-bottom:14px}
 
-/* Modal */
 .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.7);backdrop-filter:blur(4px);z-index:500;display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;visibility:hidden;transition:all .25s}
 .modal-bg.open{opacity:1;visibility:visible}
 .modal{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius-lg);padding:24px;width:100%;max-width:500px;max-height:90vh;overflow-y:auto;transform:translateY(20px) scale(.97);transition:transform .25s}
@@ -204,7 +228,6 @@ select.input{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xml
 .modal-title{font-family:var(--font-display);font-size:1.05rem;font-weight:700;margin-bottom:18px}
 .modal-acts{display:flex;gap:10px;justify-content:flex-end;margin-top:18px}
 
-/* Toast */
 .toast-box{position:fixed;top:calc(var(--header-h) + 10px);right:20px;z-index:1000;display:flex;flex-direction:column;gap:8px}
 .toast{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);padding:10px 16px;font-size:.82rem;box-shadow:var(--shadow);animation:tIn .3s ease,tOut .3s ease 2.7s forwards;max-width:340px}
 .toast.error{border-left:3px solid var(--gain)}
@@ -213,16 +236,12 @@ select.input{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xml
 @keyframes tIn{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
 @keyframes tOut{from{opacity:1}to{opacity:0;transform:translateX(20px)}}
 
-/* Loading */
 .ld{display:flex;align-items:center;justify-content:center;padding:40px}
 .ld-spin{width:24px;height:24px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
-
-/* Footer */
 .footer-bar{padding:12px 20px;text-align:center;font-size:.68rem;color:var(--text-muted);border-top:1px solid var(--border);margin-top:30px}
 .tbl-wrap{overflow-x:auto}
 
-/* Responsive */
 @media(max-width:768px){
     :root{--header-h:52px;--ticker-h:32px;--nav-h:40px}
     html{font-size:13px}
@@ -240,10 +259,9 @@ select.input{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xml
     .pf-summary{grid-template-columns:repeat(2,1fr)}
     .chart-wrap{height:260px}
     .det-grid{grid-template-columns:repeat(2,1fr)}
+    .rank-item{flex-wrap:wrap}
 }
-@media(max-width:480px){
-    .pf-summary{grid-template-columns:1fr}
-}
+@media(max-width:480px){.pf-summary{grid-template-columns:1fr}}
     </style>
 </head>
 <body>
@@ -258,6 +276,7 @@ select.input{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xml
     <div class="hdr-right">
         <div class="rfr-status"><div class="rfr-dot" id="rfrDot"></div><span id="rfrLbl">未连接</span></div>
         <div class="hdr-clock" id="clock">--:--:--</div>
+        <button class="hdr-btn" id="privacyBtn" onclick="App.togglePrivacy()" title="隐私模式">👁</button>
         <button class="hdr-btn" onclick="App.toggleTheme()" title="切换主题" id="themeBtn">🌙</button>
     </div>
 </header>
@@ -271,6 +290,7 @@ select.input{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xml
     <button class="ntab" data-t="detail">基金详情</button>
     <button class="ntab" data-t="port">我的持仓</button>
     <button class="ntab" data-t="watch">自选基金</button>
+    <button class="ntab" data-t="rank">流入榜</button>
     <button class="ntab" data-t="settings">设置</button>
 </nav>
 
@@ -292,10 +312,12 @@ select.input{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xml
         <div class="flex-b" style="margin-bottom:14px">
             <div class="sec-title" style="margin:0">持仓管理</div>
             <div class="flex-r">
+                <button class="btn btn-sm" onclick="App.modalOcr()">📷 图片识别导入</button>
                 <button class="btn btn-sm" onclick="App.exportData()">导出数据</button>
                 <button class="btn btn-pri" onclick="App.modalHold()">添加持仓</button>
             </div>
         </div>
+        <div class="account-bar" id="accountBar"></div>
         <div id="pfSum" class="pf-summary"></div>
         <div class="tbl-wrap" id="pfTbl"></div>
     </div>
@@ -304,6 +326,15 @@ select.input{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xml
             <div class="sec-title" style="margin:0">自选基金</div>
         </div>
         <div class="fgrid" id="watchGrid"></div>
+    </div>
+    <div class="tcont" id="t-rank">
+        <div class="flex-b" style="margin-bottom:14px">
+            <div class="sec-title" style="margin:0">📈 资金流入榜</div>
+            <div class="flex-r">
+                <button class="btn btn-sm" onclick="App.loadRank()">刷新</button>
+            </div>
+        </div>
+        <div id="rankBody"><div class="ld"><div class="ld-spin"></div></div></div>
     </div>
     <div class="tcont" id="t-settings">
         <div class="card" style="max-width:600px">
@@ -318,6 +349,11 @@ select.input{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xml
                 </select>
             </div>
             <div class="form-grp">
+                <label class="form-lbl">MiMo API Key（图片识别用）</label>
+                <input class="input" id="setApiKey" type="password" placeholder="输入你的 MiMo API Key" autocomplete="off">
+                <div style="font-size:.68rem;color:var(--text-muted);margin-top:4px">用于截图识别导入持仓功能，Key 仅存储在本地浏览器</div>
+            </div>
+            <div class="form-grp">
                 <label class="form-lbl">估值数据源优先级</label>
                 <div style="font-size:.82rem;color:var(--text-secondary);line-height:1.8">
                     ① 天天基金（eastmoney）→ ② 金融界（jrj）→ ③ 好买基金（howbuy）<br>
@@ -325,31 +361,26 @@ select.input{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xml
                 </div>
             </div>
             <div class="form-grp">
-                <label class="form-lbl">数据缓存</label>
-                <div class="flex-r" style="gap:8px">
-                    <button class="btn btn-sm" onclick="App.clearCache()">清除缓存</button>
-                    <span style="font-size:.72rem;color:var(--text-muted)" id="cacheInfo">-</span>
-                </div>
-            </div>
-            <div class="form-grp">
                 <label class="form-lbl">数据管理</label>
-                <div class="flex-r" style="gap:8px">
+                <div class="flex-r" style="gap:8px;flex-wrap:wrap">
+                    <button class="btn btn-sm" onclick="App.clearCache()">清除缓存</button>
                     <button class="btn btn-sm" onclick="App.exportData()">导出全部数据</button>
                     <button class="btn btn-sm" onclick="App.importData()">导入数据</button>
                     <input type="file" id="importFile" accept=".json" style="display:none" onchange="App.handleImport(event)">
+                    <span style="font-size:.72rem;color:var(--text-muted)" id="cacheInfo">-</span>
                 </div>
             </div>
             <div style="margin-top:20px;padding-top:16px;border-top:1px solid var(--border)">
                 <div style="font-size:.78rem;color:var(--text-muted);line-height:1.8">
-                    <strong>猫猫基金宝 v2.0</strong><br>
+                    <strong>猫猫基金宝 v3.0</strong><br>
                     数据来源：天天基金网 / 金融界 / 好买基金<br>
                     估值仅供参考，实际以基金公司公布为准<br>
-                    本地存储，数据不上传
+                    本地存储，数据不上传（图片识别除外）
                 </div>
             </div>
         </div>
     </div>
-    <div class="footer-bar">数据来源: 天天基金网 / 金融界 / 好买基金 · 估值仅供参考，实际以基金公司公布为准 · 猫猫基金宝 v2.0</div>
+    <div class="footer-bar">数据来源: 天天基金网 / 金融界 / 好买基金 · 估值仅供参考，实际以基金公司公布为准 · 猫猫基金宝 v3.0</div>
 </main>
 
 <div class="modal-bg" id="mBg"><div class="modal" id="mBody"></div></div>
@@ -357,430 +388,122 @@ select.input{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xml
 
 <script>
 /* ================================================================
-   猫猫基金宝 v2.0 - 完整重写
-   修复全部16个问题：多源数据、估值校验、分时图、持仓增强等
+   猫猫基金宝 v3.0
+   新增：图片识别导入、关联板块、流入榜、隐私模式、多账户
    ================================================================ */
 
-/* ====== [P13] CONFIG - 品牌名已改为猫猫基金宝 ====== */
 const C = {
-    REFRESH_TRADING: 20000,  // 交易时段 20秒
-    REFRESH_IDLE: 300000,    // 非交易时段 5分钟
-    TIMEOUT: 10000,
-    MAX_SR: 50,              // [P11] 搜索上限从20提升到50
-    LS_WL: 'mm_wl',          // [P13] localStorage key前缀改为mm_
-    LS_PF: 'mm_pf',
-    LS_EST: 'mm_est',
-    LS_INTRADAY: 'mm_intra',
-    LS_SETTINGS: 'mm_settings',
-    LS_SEARCH_HIST: 'mm_search_hist',
-    LS_FUND_LIST: 'mm_fund_list',
-    FUND_LIST_TTL: 86400000, // 基金列表缓存24小时
-    EST_TTL: 300000,         // 估值缓存5分钟
-    DATA_SOURCES: ['eastmoney', 'jrj', 'howbuy']
+    REFRESH_TRADING: 20000, REFRESH_IDLE: 300000, TIMEOUT: 10000, MAX_SR: 50,
+    LS_WL: 'mm_wl', LS_PF: 'mm_pf', LS_EST: 'mm_est', LS_INTRADAY: 'mm_intra',
+    LS_SETTINGS: 'mm_settings', LS_SEARCH_HIST: 'mm_search_hist', LS_FUND_LIST: 'mm_fund_list',
+    LS_ACCOUNTS: 'mm_accounts', LS_CUR_ACCOUNT: 'mm_cur_account',
+    FUND_LIST_TTL: 86400000, EST_TTL: 300000
 };
 
-/* ====== [P6] UTILITY FUNCTIONS ====== */
 const U = {
     fm(n, d=4) { return n == null ? '--' : Number(n).toFixed(d); },
-    fp(n) {
-        if (n == null || n === '' || isNaN(n)) return '--';
-        const v = Number(n);
-        return (v >= 0 ? '+' : '') + v.toFixed(2) + '%';
-    },
-    fa(n) {
-        if (!n || isNaN(n)) return '--';
-        const a = Math.abs(n);
-        if (a >= 1e8) return (n / 1e8).toFixed(2) + '亿';
-        if (a >= 1e4) return (n / 1e4).toFixed(2) + '万';
-        return n.toFixed(2);
-    },
+    fp(n) { if (n == null || n === '' || isNaN(n)) return '--'; const v = Number(n); return (v >= 0 ? '+' : '') + v.toFixed(2) + '%'; },
+    fa(n) { if (!n || isNaN(n)) return '--'; const a = Math.abs(n); if (a >= 1e8) return (n / 1e8).toFixed(2) + '亿'; if (a >= 1e4) return (n / 1e4).toFixed(2) + '万'; return n.toFixed(2); },
     gc(v) { const n = Number(v); return n > 0 ? 'up' : n < 0 ? 'down' : 'flat'; },
     gcl(v) { const n = Number(v); return n > 0 ? 'text-gain' : n < 0 ? 'text-loss' : 'text-flat'; },
-    // [P5] 交易时段判断
-    trading() {
-        const n = new Date(), d = n.getDay();
-        if (d === 0 || d === 6) return false;
-        const t = n.getHours() * 60 + n.getMinutes();
-        return (t >= 570 && t <= 690) || (t >= 780 && t <= 900); // 9:30-11:30, 13:00-15:00
-    },
-    // [P4] 检查估值数据是否当天新鲜
-    isFresh(gztime) {
-        if (!gztime) return false;
-        try {
-            const now = new Date();
-            const parts = gztime.match(/(\d{4})-(\d{2})-(\d{2})\s+(\d{2}):(\d{2}):(\d{2})/);
-            if (!parts) return false;
-            const gzDate = new Date(parts[1], parts[2]-1, parts[3], parts[4], parts[5], parts[6]);
-            const diff = now - gzDate;
-            // 交易时段内3分钟内算新鲜，非交易时段当天都算新鲜
-            if (U.trading()) return diff < 180000;
-            return now.toDateString() === gzDate.toDateString();
-        } catch(e) { return false; }
-    },
-    // [P4] 获取数据新鲜度状态
-    freshness(gztime) {
-        if (!gztime) return { label: '无数据', cls: 'stale' };
-        try {
-            const now = new Date();
-            const parts = gztime.match(/(\d{4})-(\d{2})-(\d{2})\s+(\d{2}):(\d{2}):(\d{2})/);
-            if (!parts) return { label: '未知', cls: 'stale' };
-            const gzDate = new Date(parts[1], parts[2]-1, parts[3], parts[4], parts[5], parts[6]);
-            const diff = Math.floor((now - gzDate) / 1000);
-            if (diff < 60) return { label: '刚刚', cls: 'fresh' };
-            if (diff < 300) return { label: Math.floor(diff / 60) + '分钟前', cls: 'fresh' };
-            if (diff < 3600) return { label: Math.floor(diff / 60) + '分钟前', cls: 'stale' };
-            return { label: '超过1小时', cls: 'stale' };
-        } catch(e) { return { label: '未知', cls: 'stale' }; }
-    },
+    trading() { const n = new Date(), d = n.getDay(); if (d === 0 || d === 6) return false; const t = n.getHours() * 60 + n.getMinutes(); return (t >= 570 && t <= 690) || (t >= 780 && t <= 900); },
+    isFresh(gztime) { if (!gztime) return false; try { const now = new Date(); const parts = gztime.match(/(\d{4})-(\d{2})-(\d{2})\s+(\d{2}):(\d{2}):(\d{2})/); if (!parts) return false; const gzDate = new Date(parts[1], parts[2]-1, parts[3], parts[4], parts[5], parts[6]); const diff = now - gzDate; if (U.trading()) return diff < 180000; return now.toDateString() === gzDate.toDateString(); } catch(e) { return false; } },
+    freshness(gztime) { if (!gztime) return { label: '无数据', cls: 'stale' }; try { const now = new Date(); const parts = gztime.match(/(\d{4})-(\d{2})-(\d{2})\s+(\d{2}):(\d{2}):(\d{2})/); if (!parts) return { label: '未知', cls: 'stale' }; const gzDate = new Date(parts[1], parts[2]-1, parts[3], parts[4], parts[5], parts[6]); const diff = Math.floor((now - gzDate) / 1000); if (diff < 60) return { label: '刚刚', cls: 'fresh' }; if (diff < 300) return { label: Math.floor(diff / 60) + '分钟前', cls: 'fresh' }; if (diff < 3600) return { label: Math.floor(diff / 60) + '分钟前', cls: 'stale' }; return { label: '超过1小时', cls: 'stale' }; } catch(e) { return { label: '未知', cls: 'stale' }; } },
     pad(n) { return String(n).padStart(2, '0'); },
-    formatTime(str) {
-        if (!str) return '--';
-        const parts = str.match(/(\d{2}):(\d{2}):(\d{2})/);
-        return parts ? parts[1] + ':' + parts[2] : str;
-    },
-    formatDate(str) {
-        if (!str) return '--';
-        const parts = str.match(/(\d{4})-(\d{2})-(\d{2})/);
-        return parts ? parts[2] + '-' + parts[3] : str;
-    }
+    formatTime(str) { if (!str) return '--'; const parts = str.match(/(\d{2}):(\d{2}):(\d{2})/); return parts ? parts[1] + ':' + parts[2] : str; }
 };
 
-/* ====== [P8] JSONP - 修复全局回调冲突 ====== */
+/* JSONP */
 const J = {
     _c: 0,
-    go(url, cb = 'callback') {
-        return new Promise((ok, no) => {
-            // [P8] 使用唯一回调名避免冲突
-            const nm = '__mm_cb_' + (++this._c) + '_' + Math.random().toString(36).slice(2, 8);
-            const tm = setTimeout(() => { cl(); no(new Error('请求超时')); }, C.TIMEOUT);
-            function cl() { clearTimeout(tm); delete window[nm]; if (s && s.parentNode) s.remove(); }
-            window[nm] = d => { cl(); ok(d); };
-            const s = document.createElement('script');
-            const sep = url.includes('?') ? '&' : '?';
-            s.src = url + sep + cb + '=' + nm;
-            s.onerror = () => { cl(); no(new Error('网络错误')); };
-            document.head.appendChild(s);
-        });
-    },
-    load(url) {
-        return new Promise((ok, no) => {
-            const s = document.createElement('script');
-            s.src = url; s.onload = () => { s.remove(); ok(); }; s.onerror = () => { s.remove(); no(new Error('加载失败')); };
-            document.head.appendChild(s);
-        });
-    }
+    go(url, cb = 'callback') { return new Promise((ok, no) => { const nm = '__mm_cb_' + (++this._c) + '_' + Math.random().toString(36).slice(2, 8); const tm = setTimeout(() => { cl(); no(new Error('请求超时')); }, C.TIMEOUT); function cl() { clearTimeout(tm); delete window[nm]; if (s && s.parentNode) s.remove(); } window[nm] = d => { cl(); ok(d); }; const s = document.createElement('script'); s.src = url + (url.includes('?') ? '&' : '?') + cb + '=' + nm; s.onerror = () => { cl(); no(new Error('网络错误')); }; document.head.appendChild(s); }); },
+    load(url) { return new Promise((ok, no) => { const s = document.createElement('script'); s.src = url; s.onload = () => { s.remove(); ok(); }; s.onerror = () => { s.remove(); no(new Error('加载失败')); }; document.head.appendChild(s); }); }
 };
 
-/* ====== API - [P1] 多源数据 + [P7] 列表缓存 + [P8] 并发控制 ====== */
+/* API */
 const API = {
-    _list: null, _q: [], _busy: false,
+    _list: null, _q: [], _busy: false, _sectors: {},
 
-    // [P7] 基金列表带localStorage缓存
     async loadList() {
         if (this._list) return this._list;
-        // 尝试从缓存加载
-        try {
-            const cached = localStorage.getItem(C.LS_FUND_LIST);
-            if (cached) {
-                const { data, ts } = JSON.parse(cached);
-                if (Date.now() - ts < C.FUND_LIST_TTL && data?.length) {
-                    this._list = data;
-                    console.log('[猫猫基金宝] 基金列表从缓存加载，共', data.length, '只');
-                    return this._list;
-                }
-            }
-        } catch(e) {}
-        // 从网络加载
-        try {
-            await J.load('https://fund.eastmoney.com/js/fundcode_search.js?rt=' + Date.now());
-            if (window.r && Array.isArray(window.r)) {
-                this._list = window.r.map(i => ({ code: i[0], py: i[1], name: i[2], type: i[3], pyf: i[4] }));
-                delete window.r;
-                // [P7] 存入缓存
-                try {
-                    localStorage.setItem(C.LS_FUND_LIST, JSON.stringify({ data: this._list, ts: Date.now() }));
-                } catch(e) { console.warn('缓存写入失败，可能空间不足'); }
-                return this._list;
-            }
-            throw 0;
-        } catch(e) {
-            // [P7] 网络失败时尝试过期缓存
-            try {
-                const cached = localStorage.getItem(C.LS_FUND_LIST);
-                if (cached) {
-                    this._list = JSON.parse(cached).data;
-                    if (this._list?.length) {
-                        console.warn('[猫猫基金宝] 使用过期缓存的基金列表');
-                        return this._list;
-                    }
-                }
-            } catch(e2) {}
-            throw new Error('基金列表加载失败，请检查网络');
-        }
+        try { const cached = localStorage.getItem(C.LS_FUND_LIST); if (cached) { const { data, ts } = JSON.parse(cached); if (Date.now() - ts < C.FUND_LIST_TTL && data?.length) { this._list = data; return this._list; } } } catch(e) {}
+        try { await J.load('https://fund.eastmoney.com/js/fundcode_search.js?rt=' + Date.now()); if (window.r && Array.isArray(window.r)) { this._list = window.r.map(i => ({ code: i[0], py: i[1], name: i[2], type: i[3], pyf: i[4] })); delete window.r; try { localStorage.setItem(C.LS_FUND_LIST, JSON.stringify({ data: this._list, ts: Date.now() })); } catch(e) {} return this._list; } throw 0; }
+        catch(e) { try { const cached = localStorage.getItem(C.LS_FUND_LIST); if (cached) { this._list = JSON.parse(cached).data; if (this._list?.length) return this._list; } } catch(e2) {} throw new Error('基金列表加载失败'); }
     },
 
-    // [P11] 增强搜索：支持类型筛选
-    search(kw, typeFilter) {
-        if (!this._list || !kw) return [];
-        const k = kw.toLowerCase().trim(), r = [];
-        for (const f of this._list) {
-            if (r.length >= C.MAX_SR) break;
-            if (typeFilter && f.type !== typeFilter) continue;
-            if (f.code.includes(k) || f.name.toLowerCase().includes(k) || f.py.toLowerCase().includes(k) || f.pyf.toLowerCase().includes(k)) r.push(f);
-        }
-        return r;
-    },
+    search(kw, typeFilter) { if (!this._list || !kw) return []; const k = kw.toLowerCase().trim(), r = []; for (const f of this._list) { if (r.length >= C.MAX_SR) break; if (typeFilter && f.type !== typeFilter) continue; if (f.code.includes(k) || f.name.toLowerCase().includes(k) || f.py.toLowerCase().includes(k) || f.pyf.toLowerCase().includes(k)) r.push(f); } return r; },
 
-    // [P8] 修复JSONP并发冲突
-    fetchEst(code) {
-        return new Promise((ok, no) => { this._q.push({ code, ok, no }); this._pq(); });
-    },
+    fetchEst(code) { return new Promise((ok, no) => { this._q.push({ code, ok, no }); this._pq(); }); },
+    async _pq() { if (this._busy || !this._q.length) return; this._busy = true; while (this._q.length) { const { code, ok, no } = this._q.shift(); try { const d = await this._fetchEstSource(code); ok(d); } catch(e) { no(e); } await new Promise(r => setTimeout(r, 100)); } this._busy = false; },
+    async _fetchEstSource(code) { const errs = []; for (const src of ['eastmoney', 'jrj']) { try { const d = await this._fetchEstSingle(code, src); if (d && d.gsz) return { ...d, _source: src }; } catch(e) { errs.push(src + ': ' + e.message); } } throw new Error('所有源失败'); },
+    _fetchEstSingle(code, src) { return new Promise((resolve, reject) => { const tm = setTimeout(() => reject(new Error('超时')), 8000); window.jsonpgz = data => { clearTimeout(tm); resolve(data); }; const s = document.createElement('script'); s.src = `https://fundgz.jrj.com.cn/js/${code}.js?rt=${Date.now()}`; s.onload = () => { if (s.parentNode) s.remove(); }; s.onerror = () => { clearTimeout(tm); reject(new Error('网络错误')); if (s.parentNode) s.remove(); }; document.head.appendChild(s); }); },
 
-    async _pq() {
-        if (this._busy || !this._q.length) return;
-        this._busy = true;
-        while (this._q.length) {
-            const { code, ok, no } = this._q.shift();
-            try {
-                const d = await this._fetchEstFromSource(code);
-                ok(d);
-            } catch(e) { no(e); }
-            await new Promise(r => setTimeout(r, 100));
-        }
-        this._busy = false;
-    },
+    validateEst(est) { if (!est) return null; const result = { ...est }; if (result.dwjz && result.gsz && !result.gszzl) { const dwjz = parseFloat(result.dwjz); const gsz = parseFloat(result.gsz); if (dwjz > 0) result.gszzl = ((gsz - dwjz) / dwjz * 100).toFixed(2); } if (result.dwjz && result.gsz && result.gszzl) { const dwjz = parseFloat(result.dwjz); const gsz = parseFloat(result.gsz); const expected = ((gsz - dwjz) / dwjz * 100); const actual = parseFloat(result.gszzl); if (Math.abs(expected - actual) > 0.5) { result._warn = '涨跌幅与净值不一致'; result.gszzl = expected.toFixed(2); } } if (result.gsz) result.gsz = parseFloat(result.gsz).toFixed(4); if (result.dwjz) result.dwjz = parseFloat(result.dwjz).toFixed(4); return result; },
 
-    // [P1] 多源估值数据，自动降级
-    async _fetchEstFromSource(code) {
-        const errors = [];
-        // 源1：天天基金（eastmoney）- 最权威
-        try {
-            const d = await this._fetchEstEastmoney(code);
-            if (d && d.gsz) return { ...d, _source: 'eastmoney' };
-        } catch(e) { errors.push('eastmoney: ' + e.message); }
-        // 源2：金融界（jrj）
-        try {
-            const d = await this._fetchEstJrj(code);
-            if (d && d.gsz) return { ...d, _source: 'jrj' };
-        } catch(e) { errors.push('jrj: ' + e.message); }
-        // 源3：好买基金（howbuy）
-        try {
-            const d = await this._fetchEstHowbuy(code);
-            if (d && d.gsz) return { ...d, _source: 'howbuy' };
-        } catch(e) { errors.push('howbuy: ' + e.message); }
-        throw new Error('所有数据源均失败: ' + errors.join('; '));
-    },
+    async fetchDetail(code) { await J.load('https://fund.eastmoney.com/pingzhongdata/' + code + '.js?rt=' + Date.now()); const d = { name: window.fS_name || '', code: window.fS_code || code, syl_1n: window.syl_1n, syl_6y: window.syl_6y, syl_3y: window.syl_3y, syl_1y: window.syl_1y, nwTrend: window.Data_netWorthTrend || [], acTrend: window.Data_ACWorthTrend || [], sharesPos: window.Data_fundSharesPositions || [], rate: window.fund_Rate || '', srcRate: window.fund_sourceRate || '' }; if (window.stockCodesNew && window.stockNamesNew && window.stockPercentNew) { d.holdings = window.stockCodesNew.map((c, i) => ({ code: c, name: window.stockNamesNew[i] || '', pct: window.stockPercentNew[i] || 0 })); } return d; },
 
-    // 天天基金估值API
-    _fetchEstEastmoney(code) {
-        return new Promise((resolve, reject) => {
-            const tm = setTimeout(() => reject(new Error('超时')), 8000);
-            window.jsonpgz = data => { clearTimeout(tm); resolve(data); };
-            const s = document.createElement('script');
-            s.src = `https://fundgz.jrj.com.cn/js/${code}.js?rt=${Date.now()}`;
-            s.onload = () => { if (s.parentNode) s.remove(); };
-            s.onerror = () => { clearTimeout(tm); reject(new Error('网络错误')); if (s.parentNode) s.remove(); };
-            document.head.appendChild(s);
-        });
-    },
+    async fetchIntraday(code) { try { const data = await J.go(`https://api.fund.eastmoney.com/FundGuZhi/GetFundGZLSByCode.aspx?type=1&FundCode=${code}`, 'cb'); if (data?.Data?.GZLS) return data.Data.GZLS.map(item => ({ time: item.GZTIME, value: parseFloat(item.GSJZ), chg: parseFloat(item.GSZZL) })); } catch(e) {} return []; },
 
-    // 金融界估值API（备用）
-    _fetchEstJrj(code) {
-        return new Promise((resolve, reject) => {
-            const tm = setTimeout(() => reject(new Error('超时')), 8000);
-            const cbName = '__mm_jrj_' + code + '_' + Date.now();
-            window[cbName] = data => { clearTimeout(tm); delete window[cbName]; resolve(data); };
-            const s = document.createElement('script');
-            s.src = `https://fundgz.jrj.com.cn/js/${code}.js?rt=${Date.now()}`;
-            s.onload = () => { if (s.parentNode) s.remove(); };
-            s.onerror = () => { clearTimeout(tm); delete window[cbName]; reject(new Error('网络错误')); if (s.parentNode) s.remove(); };
-            document.head.appendChild(s);
-        });
-    },
+    async fetchFundInfo(code) { try { const data = await J.go(`https://fundmobapi.eastmoney.com/FundMApi/FundBaseTypeInformation.aspx?FCODE=${code}&deviceid=wap&plat=Wap&product=EFund&version=2.0.0`, 'cb'); if (data?.Datas) return { name: data.Datas.SHORTNAME || '', code: data.Datas.FCODE || code, type: data.Datas.FTYPE || '', company: data.Datas.JJGSNAME || '', manager: data.Datas.JJJL || '', scale: data.Datas.NETNAV || '', establishDate: data.Datas.ESTABDATE || '', buyRate: data.Datas.RATE || '', redeemRate: data.Datas.REDEEMRATE || '', benchmark: data.Datas.BENCHMARK || '' }; } catch(e) {} return null; },
 
-    // 好买基金API（第三备用）
-    async _fetchEstHowbuy(code) {
-        const resp = await fetch(`https://www.howbuy.com/fund/ajax/fundNetValue.htm?jjdm=${code}`, { signal: AbortSignal.timeout(8000) });
-        const text = await resp.text();
-        const data = JSON.parse(text);
-        if (!data || !data.gsz) throw new Error('无数据');
-        return data;
-    },
+    async fetchFundRank(code) { try { const data = await J.go(`https://fundmobapi.eastmoney.com/FundMApi/FundRankInfo.aspx?FCODE=${code}&deviceid=wap&plat=Wap&product=EFund&version=2.0.0`, 'cb'); if (data?.Datas) return { maxDrawdown: data.Datas.MAXRETRA_1Y || '--', sharpe: data.Datas.SHARPE_1Y || '--' }; } catch(e) {} return null; },
 
-    // [P2] 估值精度交叉校验
-    validateEst(est) {
-        if (!est) return null;
-        const result = { ...est };
-        // 校验净值和涨跌幅的一致性
-        if (result.dwjz && result.gsz && !result.gszzl) {
-            // 如果没有涨跌幅但有净值，自行计算
-            const dwjz = parseFloat(result.dwjz);
-            const gsz = parseFloat(result.gsz);
-            if (dwjz > 0) {
-                result.gszzl = ((gsz - dwjz) / dwjz * 100).toFixed(2);
-            }
-        }
-        if (result.dwjz && result.gsz && result.gszzl) {
-            const dwjz = parseFloat(result.dwjz);
-            const gsz = parseFloat(result.gsz);
-            const expectedChg = ((gsz - dwjz) / dwjz * 100);
-            const actualChg = parseFloat(result.gszzl);
-            // 如果偏差超过0.5%，标记异常
-            if (Math.abs(expectedChg - actualChg) > 0.5) {
-                result._warn = '涨跌幅与净值不一致';
-                // 以净值反算为准
-                result.gszzl = expectedChg.toFixed(2);
-            }
-        }
-        // 限制小数位数
-        if (result.gsz) result.gsz = parseFloat(result.gsz).toFixed(4);
-        if (result.dwjz) result.dwjz = parseFloat(result.dwjz).toFixed(4);
-        return result;
-    },
+    // 获取基金板块信息
+    async fetchSector(code) { if (this._sectors[code]) return this._sectors[code]; try { const data = await J.go(`https://fundmobapi.eastmoney.com/FundMApi/FundBaseTypeInformation.aspx?FCODE=${code}&deviceid=wap&plat=Wap&product=EFund&version=2.0.0`, 'cb'); if (data?.Datas?.BENCHMARK) { const bm = data.Datas.BENCHMARK; const sectors = []; const sectorKeywords = ['半导体','芯片','新能源','医药','医疗','消费','白酒','军工','科技','互联网','光伏','锂电','银行','证券','保险','地产','农业','食品','汽车','环保','传媒','游戏','5G','人工智能','AI','算力','CPO','储能','电池','有色','钢铁','煤炭','石油','化工','机械','电子','通信','计算机','家电','纺织','建材','交通运输','电力','水利','稀土','黄金']; for (const kw of sectorKeywords) { if (bm.includes(kw) || data.Datas.FTYPE?.includes(kw) || data.Datas.SHORTNAME?.includes(kw)) sectors.push(kw); } if (sectors.length) { this._sectors[code] = sectors.slice(0, 3); return this._sectors[code]; } } // 从基金名称提取行业 const name = data?.Datas?.SHORTNAME || ''; const sectors = []; const nameKeywords = ['半导体','芯片','新能源','医药','医疗','消费','白酒','军工','科技','互联网','光伏','锂电','银行','证券','地产','农业','食品','汽车','环保','传媒','游戏','5G','人工智能','AI','算力','CPO','储能','电池','有色','煤炭','化工','电子','通信','计算机','家电','稀土','黄金']; for (const kw of nameKeywords) { if (name.includes(kw)) sectors.push(kw); } this._sectors[code] = sectors.slice(0, 3); return this._sectors[code]; } catch(e) {} return []; },
 
-    async fetchDetail(code) {
-        await J.load('https://fund.eastmoney.com/pingzhongdata/' + code + '.js?rt=' + Date.now());
-        const d = {
-            name: window.fS_name || '', code: window.fS_code || code,
-            syl_1n: window.syl_1n, syl_6y: window.syl_6y, syl_3y: window.syl_3y, syl_1y: window.syl_1y,
-            nwTrend: window.Data_netWorthTrend || [], acTrend: window.Data_ACWorthTrend || [],
-            sharesPos: window.Data_fundSharesPositions || [],
-            rate: window.fund_Rate || '', srcRate: window.fund_sourceRate || ''
-        };
-        if (window.stockCodesNew && window.stockNamesNew && window.stockPercentNew) {
-            d.holdings = window.stockCodesNew.map((c, i) => ({ code: c, name: window.stockNamesNew[i] || '', pct: window.stockPercentNew[i] || 0 }));
-        }
-        return d;
-    },
+    // 资金流入榜
+    async fetchInflowRank() { try { const data = await J.go('https://fundmobapi.eastmoney.com/FundMApi/FundInFlowList.aspx?SortColumn=SYL_1N&SortType=Desc&PageIndex=1&PageSize=20&deviceid=wap&plat=Wap&product=EFund&version=2.0.0', 'cb'); if (data?.Datas) return data.Datas.map(item => ({ code: item.FCODE, name: item.SHORTNAME, type: item.FTYPE, chg_1y: item.SYL_1Y, chg_6m: item.SYL_6Y, chg_3m: item.SYL_3Y, chg_1m: item.SYL_1Y, nav: item.DWJZ, totalNav: item.LJJZ })); } catch(e) {} return []; },
 
-    // [P6] 获取分时估值数据
-    async fetchIntraday(code) {
-        try {
-            const data = await J.go(`https://api.fund.eastmoney.com/FundGuZhi/GetFundGZLSByCode.aspx?type=1&FundCode=${code}`, 'cb');
-            if (data?.Data?.GZLS) {
-                return data.Data.GZLS.map(item => ({
-                    time: item.GZTIME,
-                    value: parseFloat(item.GSJZ),
-                    chg: parseFloat(item.GSZZL)
-                }));
-            }
-        } catch(e) { console.warn('分时数据获取失败:', e); }
-        return [];
-    },
-
-    // [P9] 获取基金详细信息
-    async fetchFundInfo(code) {
-        try {
-            const data = await J.go(`https://fundmobapi.eastmoney.com/FundMApi/FundBaseTypeInformation.aspx?FCODE=${code}&deviceid=wap&plat=Wap&product=EFund&version=2.0.0`, 'cb');
-            if (data?.Datas) {
-                return {
-                    name: data.Datas.SHORTNAME || '',
-                    code: data.Datas.FCODE || code,
-                    type: data.Datas.FTYPE || '',
-                    company: data.Datas.JJGSNAME || '',
-                    manager: data.Datas.JJJL || '',
-                    scale: data.Datas.NETNAV || '',  // 基金规模(亿)
-                    establishDate: data.Datas.ESTABDATE || '',
-                    buyRate: data.Datas.RATE || '',
-                    redeemRate: data.Datas.REDEEMRATE || '',
-                    benchmark: data.Datas.BENCHMARK || ''
-                };
-            }
-        } catch(e) { console.warn('基金信息获取失败:', e); }
-        return null;
-    },
-
-    // [P9] 获取基金排名
-    async fetchFundRank(code) {
-        try {
-            const data = await J.go(`https://fundmobapi.eastmoney.com/FundMApi/FundRankInfo.aspx?FCODE=${code}&deviceid=wap&plat=Wap&product=EFund&version=2.0.0`, 'cb');
-            if (data?.Datas) {
-                return {
-                    rank_1y: data.Datas.SYL_1Y ? `排名 ${data.Datas.RANK_1Y || '--'}/${data.Datas.SAME_1Y || '--'}` : '--',
-                    rank_6m: data.Datas.SYL_6Y ? `排名 ${data.Datas.RANK_6Y || '--'}/${data.Datas.SAME_6Y || '--'}` : '--',
-                    rank_3m: data.Datas.SYL_3Y ? `排名 ${data.Datas.RANK_3Y || '--'}/${data.Datas.SAME_3Y || '--'}` : '--',
-                    rank_1m: data.Datas.SYL_1Y ? `排名 ${data.Datas.RANK_1Y || '--'}/${data.Datas.SAME_1Y || '--'}` : '--',
-                    maxDrawdown: data.Datas.MAXRETRA_1Y || '--',
-                    sharpe: data.Datas.SHARPE_1Y || '--'
-                };
-            }
-        } catch(e) {}
-        return null;
-    },
-
-    async fetchIdx() {
-        try {
-            const d = await J.go('https://push2.eastmoney.com/api/qt/ulist.np/get?fltt=2&invt=2&fields=f2,f3,f4,f12,f14&secids=1.000001,0.399001,0.399006,1.000300,1.000905', 'cb');
-            return d?.data?.diff || [];
-        } catch(e) { console.error(e); return []; }
-    }
+    async fetchIdx() { try { const d = await J.go('https://push2.eastmoney.com/api/qt/ulist.np/get?fltt=2&invt=2&fields=f2,f3,f4,f12,f14&secids=1.000001,0.399001,0.399006,1.000300,1.000905', 'cb'); return d?.data?.diff || []; } catch(e) { return []; } }
 };
 
-/* ====== [P6] STORE - 分时数据追踪 ====== */
+/* Store - 多账户支持 */
 const S = {
-    wl: [], pf: [], est: {}, info: {}, intraday: {},
+    wl: [], accounts: {}, curAccount: 'default', est: {}, info: {}, intraday: {},
 
     init() {
         try {
-            const w = localStorage.getItem(C.LS_WL), p = localStorage.getItem(C.LS_PF);
-            if (w) this.wl = JSON.parse(w); if (p) this.pf = JSON.parse(p);
-            // [P6] 加载分时历史数据
+            const w = localStorage.getItem(C.LS_WL); if (w) this.wl = JSON.parse(w);
+            const accts = localStorage.getItem(C.LS_ACCOUNTS);
+            if (accts) { this.accounts = JSON.parse(accts); }
+            else { // 迁移旧数据
+                const oldPf = localStorage.getItem(C.LS_PF);
+                this.accounts = { 'default': { name: '默认', portfolio: oldPf ? JSON.parse(oldPf) : [] } };
+                this.saveAccounts();
+            }
+            const cur = localStorage.getItem(C.LS_CUR_ACCOUNT);
+            if (cur && this.accounts[cur]) this.curAccount = cur;
             const intra = localStorage.getItem(C.LS_INTRADAY);
-            if (intra) {
-                const parsed = JSON.parse(intra);
-                const today = new Date().toDateString();
-                // 只保留今天的数据
-                Object.keys(parsed).forEach(code => {
-                    this.intraday[code] = (parsed[code] || []).filter(item => {
-                        try { return new Date(item.time).toDateString() === today; } catch(e) { return false; }
-                    });
-                });
-            }
-            // 加载历史估值用于恢复显示
+            if (intra) { const parsed = JSON.parse(intra); const today = new Date().toDateString(); Object.keys(parsed).forEach(code => { this.intraday[code] = (parsed[code] || []).filter(item => { try { return new Date(item.time).toDateString() === today; } catch(e) { return false; } }); }); }
             const estCache = localStorage.getItem(C.LS_EST);
-            if (estCache) {
-                const parsed = JSON.parse(estCache);
-                const now = Date.now();
-                Object.keys(parsed).forEach(code => {
-                    if (now - parsed[code]._t < C.EST_TTL * 12) { // 保留1小时内的
-                        this.est[code] = parsed[code];
-                    }
-                });
-            }
+            if (estCache) { const parsed = JSON.parse(estCache); const now = Date.now(); Object.keys(parsed).forEach(code => { if (now - parsed[code]._t < C.EST_TTL * 12) this.est[code] = parsed[code]; }); }
         } catch(e) {}
     },
 
     sw() { localStorage.setItem(C.LS_WL, JSON.stringify(this.wl)); },
-    sp() { localStorage.setItem(C.LS_PF, JSON.stringify(this.pf)); },
+    saveAccounts() { localStorage.setItem(C.LS_ACCOUNTS, JSON.stringify(this.accounts)); localStorage.setItem(C.LS_CUR_ACCOUNT, this.curAccount); },
     saveEst() { try { localStorage.setItem(C.LS_EST, JSON.stringify(this.est)); } catch(e) {} },
     saveIntraday() { try { localStorage.setItem(C.LS_INTRADAY, JSON.stringify(this.intraday)); } catch(e) {} },
 
-    addWl(c, n) {
-        if (!this.wl.includes(c)) { this.wl.push(c); this.info[c] = { ...(this.info[c] || {}), name: n }; this.sw(); return true; }
-        return false;
-    },
+    get pf() { return this.accounts[this.curAccount]?.portfolio || []; },
+    set pf(val) { if (this.accounts[this.curAccount]) this.accounts[this.curAccount].portfolio = val; this.saveAccounts(); },
+
+    addWl(c, n) { if (!this.wl.includes(c)) { this.wl.push(c); this.info[c] = { ...(this.info[c] || {}), name: n }; this.sw(); return true; } return false; },
     rmWl(c) { this.wl = this.wl.filter(x => x !== c); this.sw(); },
     isWl(c) { return this.wl.includes(c); },
 
-    addPf(h) { this.pf.push(h); this.sp(); },
-    rmPf(i) { this.pf.splice(i, 1); this.sp(); },
-    // [P10] 修改持仓
-    updatePf(i, updates) { this.pf[i] = { ...this.pf[i], ...updates }; this.sp(); },
+    addPf(h) { this.pf = [...this.pf, h]; },
+    rmPf(i) { const arr = [...this.pf]; arr.splice(i, 1); this.pf = arr; },
+    updatePf(i, updates) { const arr = [...this.pf]; arr[i] = { ...arr[i], ...updates }; this.pf = arr; },
 
     upEst(c, d) {
         this.est[c] = { ...d, _t: Date.now() };
-        // [P6] 记录分时数据点
         if (d.gsz && d.gztime) {
             if (!this.intraday[c]) this.intraday[c] = [];
             const today = new Date().toDateString();
-            this.intraday[c] = this.intraday[c].filter(item => {
-                try { return new Date(item.time).toDateString() === today; } catch(e) { return false; }
-            });
-            // 避免重复时间点
+            this.intraday[c] = this.intraday[c].filter(item => { try { return new Date(item.time).toDateString() === today; } catch(e) { return false; } });
             const last = this.intraday[c][this.intraday[c].length - 1];
-            if (!last || last.time !== d.gztime) {
-                this.intraday[c].push({ time: d.gztime, value: parseFloat(d.gsz), chg: parseFloat(d.gszzl) || 0 });
-            }
+            if (!last || last.time !== d.gztime) this.intraday[c].push({ time: d.gztime, value: parseFloat(d.gsz), chg: parseFloat(d.gszzl) || 0 });
             this.saveIntraday();
         }
         this.saveEst();
@@ -788,70 +511,40 @@ const S = {
 
     getEst(c) { return this.est[c] || null; },
     getIntraday(c) { return this.intraday[c] || []; },
+    allCodes() { const s = new Set(this.wl); this.pf.forEach(h => s.add(h.code)); return [...s]; },
 
-    allCodes() {
-        const s = new Set(this.wl);
-        this.pf.forEach(h => s.add(h.code));
-        return [...s];
-    },
+    switchAccount(id) { if (this.accounts[id]) { this.curAccount = id; this.saveAccounts(); } },
+    addAccount(name) { const id = 'acct_' + Date.now(); this.accounts[id] = { name, portfolio: [] }; this.curAccount = id; this.saveAccounts(); return id; },
+    deleteAccount(id) { if (id === 'default') return false; delete this.accounts[id]; if (this.curAccount === id) this.curAccount = 'default'; this.saveAccounts(); return true; },
+    renameAccount(id, name) { if (this.accounts[id]) { this.accounts[id].name = name; this.saveAccounts(); } },
 
-    // [P16] 导出数据
-    exportAll() {
-        return {
-            version: '2.0',
-            exportDate: new Date().toISOString(),
-            watchlist: this.wl,
-            portfolio: this.pf,
-            info: this.info,
-            intraday: this.intraday
-        };
-    },
-
-    // [P16] 导入数据
-    importAll(data) {
-        if (data.watchlist) this.wl = data.watchlist;
-        if (data.portfolio) this.pf = data.portfolio;
-        if (data.info) this.info = { ...this.info, ...data.info };
-        if (data.intraday) this.intraday = { ...this.intraday, ...data.intraday };
-        this.sw(); this.sp(); this.saveIntraday();
-    }
+    exportAll() { return { version: '3.0', exportDate: new Date().toISOString(), watchlist: this.wl, accounts: this.accounts, curAccount: this.curAccount, info: this.info, intraday: this.intraday }; },
+    importAll(data) { if (data.watchlist) this.wl = data.watchlist; if (data.accounts) this.accounts = data.accounts; if (data.curAccount) this.curAccount = data.curAccount; if (data.info) this.info = { ...this.info, ...data.info }; if (data.intraday) this.intraday = { ...this.intraday, ...data.intraday }; this.sw(); this.saveAccounts(); this.saveIntraday(); }
 };
 
-/* ====== [P14] THEME SYSTEM ====== */
-const Theme = {
-    init() {
-        const saved = localStorage.getItem('mm_theme') || 'dark';
-        this.set(saved);
-    },
-    set(mode) {
-        document.documentElement.classList.toggle('light', mode === 'light');
-        localStorage.setItem('mm_theme', mode);
-        const btn = document.getElementById('themeBtn');
-        if (btn) btn.textContent = mode === 'light' ? '☀️' : '🌙';
-    },
-    toggle() {
-        const isLight = document.documentElement.classList.contains('light');
-        this.set(isLight ? 'dark' : 'light');
-    }
-};
+/* Theme */
+const Theme = { init() { const saved = localStorage.getItem('mm_theme') || 'dark'; this.set(saved); }, set(mode) { document.documentElement.classList.toggle('light', mode === 'light'); localStorage.setItem('mm_theme', mode); const btn = document.getElementById('themeBtn'); if (btn) btn.textContent = mode === 'light' ? '☀️' : '🌙'; }, toggle() { const isLight = document.documentElement.classList.contains('light'); this.set(isLight ? 'dark' : 'light'); } };
 
-/* ====== UI RENDER ====== */
+/* Privacy */
+const Privacy = { _on: false, init() { this._on = localStorage.getItem('mm_privacy') === '1'; this.apply(); }, toggle() { this._on = !this._on; localStorage.setItem('mm_privacy', this._on ? '1' : '0'); this.apply(); }, apply() { document.querySelectorAll('.pf-card-val,.det-val,.fcard-gs').forEach(el => { el.classList.toggle('privacy-mask', this._on); }); const btn = document.getElementById('privacyBtn'); if (btn) { btn.classList.toggle('active', this._on); btn.textContent = this._on ? '🙈' : '👁'; } }, mask(v) { return this._on ? '****' : v; } };
+
+/* Render */
 const R = {
     fcard(code, est, acts = true) {
         const inf = S.info[code] || {}, nm = est?.name || inf.name || '未知基金',
               gsz = est?.gsz || '--', gz = est?.gszzl, gc = U.gc(gz),
               ct = gz != null ? U.fp(gz) : '--', dwj = est?.dwjz || '--',
               gt = est?.gztime || '--', iw = S.isWl(code);
-        // [P4] 数据新鲜度
         const fresh = U.freshness(gt);
         const sourceLabel = est?._source ? `<span class="tag" style="font-size:.6rem">${est._source}</span>` : '';
+        const sectors = API._sectors[code] || [];
+        const sectorTags = sectors.map(s => `<span class="tag-sector">${s}</span>`).join('');
+        const isHold = S.pf.some(h => h.code === code);
         return `<div class="fcard" onclick="App.view('${code}')">
-            <div class="fcard-top"><div><div class="fcard-name">${nm}</div><div class="fcard-code">${code} ${sourceLabel}</div></div>
-            <div class="fcard-est"><div class="fcard-gs ${U.gcl(gz)}">${gsz}</div><div class="fcard-chg ${gc}">${ct}</div></div></div>
-            <div class="fcard-meta">
-                <span>昨日净值 ${dwj}</span>
-                <span class="fcard-fresh"><span class="dot ${fresh.cls}"></span>${fresh.label} · ${U.formatTime(gt)}</span>
-            </div>
+            <div class="fcard-top"><div><div class="fcard-name">${nm}${isHold ? ' <span class="tag-hold">持有</span>' : ''}</div><div class="fcard-code">${code} ${sourceLabel}</div></div>
+            <div class="fcard-est"><div class="fcard-gs ${U.gcl(gz)}">${Privacy.mask(gsz)}</div><div class="fcard-chg ${gc}">${ct}</div></div></div>
+            ${sectorTags ? `<div class="fcard-tags">${sectorTags}</div>` : ''}
+            <div class="fcard-meta"><span>昨日净值 ${Privacy.mask(dwj)}</span><span class="fcard-fresh"><span class="dot ${fresh.cls}"></span>${fresh.label} · ${U.formatTime(gt)}</span></div>
             ${est?._warn ? `<div style="font-size:.68rem;color:var(--gain);margin-top:4px">⚠️ ${est._warn}</div>` : ''}
             ${acts ? `<div class="fcard-acts" onclick="event.stopPropagation()">
                 <button class="btn btn-sm ${iw ? 'btn-danger' : ''}" onclick="App.togWl('${code}','${nm.replace(/'/g, "\\'")}')">${iw ? '取消自选' : '加自选'}</button>
@@ -859,64 +552,28 @@ const R = {
             </div>` : ''}</div>`;
     },
 
-    ticker(idx) {
-        return idx.map(i => {
-            const c = U.gc(i.f3);
-            return `<div class="tk-item"><span class="tk-name">${i.f14}</span><span class="tk-price fcard-chg ${c}" style="background:none;padding:0">${i.f2}</span><span class="tk-chg fcard-chg ${c}">${U.fp(i.f3)}</span></div>`;
-        }).join('');
-    },
+    ticker(idx) { return idx.map(i => { const c = U.gc(i.f3); return `<div class="tk-item"><span class="tk-name">${i.f14}</span><span class="tk-price fcard-chg ${c}" style="background:none;padding:0">${i.f2}</span><span class="tk-chg fcard-chg ${c}">${U.fp(i.f3)}</span></div>`; }).join(''); },
 
     detail(code, est, det, info, rank) {
-        const nm = det?.name || est?.name || info?.name || '未知基金',
-              gsz = est?.gsz || '--', gz = est?.gszzl,
-              gc = U.gc(gz), ct = gz != null ? U.fp(gz) : '--', iw = S.isWl(code);
+        const nm = det?.name || est?.name || info?.name || '未知基金', gsz = est?.gsz || '--', gz = est?.gszzl, gc = U.gc(gz), ct = gz != null ? U.fp(gz) : '--', iw = S.isWl(code);
         const fresh = U.freshness(est?.gztime);
-        // 历史业绩
-        let perf = '';
-        if (det) {
-            [{ l: '近1月', v: det.syl_1y }, { l: '近3月', v: det.syl_3y }, { l: '近6月', v: det.syl_6y }, { l: '近1年', v: det.syl_1n }]
-            .forEach(m => { if (m.v != null && m.v !== '') perf += `<div class="det-stat"><div class="det-stat-lbl">${m.l}</div><div class="det-stat-val ${U.gcl(m.v)}">${U.fp(m.v)}</div></div>`; });
-        }
-        // [P9] 基金信息
-        let fundInfo = '';
-        if (info) {
-            fundInfo += `<div class="det-stat"><div class="det-stat-lbl">基金类型</div><div class="det-stat-val">${info.type || '--'}</div></div>`;
-            fundInfo += `<div class="det-stat"><div class="det-stat-lbl">基金公司</div><div class="det-stat-val" style="font-size:.82rem">${info.company || '--'}</div></div>`;
-            fundInfo += `<div class="det-stat"><div class="det-stat-lbl">基金经理</div><div class="det-stat-val">${info.manager || '--'}</div></div>`;
-            fundInfo += `<div class="det-stat"><div class="det-stat-lbl">基金规模</div><div class="det-stat-val">${info.scale ? info.scale + '亿' : '--'}</div></div>`;
-            fundInfo += `<div class="det-stat"><div class="det-stat-lbl">成立日期</div><div class="det-stat-val">${info.establishDate || '--'}</div></div>`;
-            fundInfo += `<div class="det-stat"><div class="det-stat-lbl">申购费率</div><div class="det-stat-val" style="font-size:.78rem">${info.buyRate || '--'}</div></div>`;
-        }
-        // [P9] 排名和风险指标
-        let rankInfo = '';
-        if (rank) {
-            if (rank.maxDrawdown && rank.maxDrawdown !== '--') rankInfo += `<div class="det-stat"><div class="det-stat-lbl">最大回撤(近1年)</div><div class="det-stat-val text-gain">${rank.maxDrawdown}</div></div>`;
-            if (rank.sharpe && rank.sharpe !== '--') rankInfo += `<div class="det-stat"><div class="det-stat-lbl">夏普比率(近1年)</div><div class="det-stat-val">${rank.sharpe}</div></div>`;
-        }
-        // 持仓
-        let hold = '';
-        if (det?.holdings?.length) {
-            hold = `<div class="det-stat" style="grid-column:1/-1"><div class="det-stat-lbl">前十大持仓</div>
-            <div class="hold-list">${det.holdings.slice(0, 10).map((h, i) =>
-                `<div class="hold-row"><span style="color:var(--text-muted);min-width:20px">${i + 1}.</span><span style="flex:1">${h.name}</span><span class="hold-pct">${typeof h.pct === 'number' ? h.pct.toFixed(2) + '%' : '--'}</span></div>`
-            ).join('')}</div></div>`;
-        }
-        // [P4] 数据源和新鲜度
-        const sourceInfo = est?._source ? `数据源: ${est._source}` : '';
-        return `<div class="det-head"><div><div class="det-name">${nm}</div><div class="det-code">${code} ${info?.type ? '· ' + info.type : ''} ${det?.rate ? '· 费率 ' + det.rate : ''}</div></div>
-            <div class="det-price"><div class="det-val ${U.gcl(gz)}">${gsz}</div><div class="det-chg fcard-chg ${gc}">${ct}</div>
-            <div style="font-size:.72rem;color:var(--text-muted);margin-top:4px">昨日净值 ${est?.dwjz || '--'} · <span class="fcard-fresh"><span class="dot ${fresh.cls}"></span>${fresh.label}</span></div>
-            ${sourceInfo ? `<div style="font-size:.68rem;color:var(--text-muted)">${sourceInfo} · ${est?.gztime || ''}</div>` : ''}
-            ${est?._warn ? `<div style="font-size:.68rem;color:var(--gain)">⚠️ ${est._warn}</div>` : ''}
-            </div></div>
+        let perf = ''; if (det) { [{ l: '近1月', v: det.syl_1y }, { l: '近3月', v: det.syl_3y }, { l: '近6月', v: det.syl_6y }, { l: '近1年', v: det.syl_1n }].forEach(m => { if (m.v != null && m.v !== '') perf += `<div class="det-stat"><div class="det-stat-lbl">${m.l}</div><div class="det-stat-val ${U.gcl(m.v)}">${U.fp(m.v)}</div></div>`; }); }
+        let fundInfo = ''; if (info) { fundInfo += `<div class="det-stat"><div class="det-stat-lbl">基金类型</div><div class="det-stat-val">${info.type || '--'}</div></div>`; fundInfo += `<div class="det-stat"><div class="det-stat-lbl">基金公司</div><div class="det-stat-val" style="font-size:.82rem">${info.company || '--'}</div></div>`; fundInfo += `<div class="det-stat"><div class="det-stat-lbl">基金经理</div><div class="det-stat-val">${info.manager || '--'}</div></div>`; fundInfo += `<div class="det-stat"><div class="det-stat-lbl">基金规模</div><div class="det-stat-val">${info.scale ? info.scale + '亿' : '--'}</div></div>`; fundInfo += `<div class="det-stat"><div class="det-stat-lbl">成立日期</div><div class="det-stat-val">${info.establishDate || '--'}</div></div>`; fundInfo += `<div class="det-stat"><div class="det-stat-lbl">申购费率</div><div class="det-stat-val" style="font-size:.78rem">${info.buyRate || '--'}</div></div>`; }
+        const sectors = API._sectors[code] || [];
+        if (sectors.length) fundInfo += `<div class="det-stat"><div class="det-stat-lbl">关联板块</div><div class="det-stat-val">${sectors.map(s => `<span class="tag-sector">${s}</span>`).join(' ')}</div></div>`;
+        let rankInfo = ''; if (rank) { if (rank.maxDrawdown && rank.maxDrawdown !== '--') rankInfo += `<div class="det-stat"><div class="det-stat-lbl">最大回撤(近1年)</div><div class="det-stat-val text-gain">${rank.maxDrawdown}</div></div>`; if (rank.sharpe && rank.sharpe !== '--') rankInfo += `<div class="det-stat"><div class="det-stat-lbl">夏普比率(近1年)</div><div class="det-stat-val">${rank.sharpe}</div></div>`; }
+        let hold = ''; if (det?.holdings?.length) { hold = `<div class="det-stat" style="grid-column:1/-1"><div class="det-stat-lbl">前十大持仓</div><div class="hold-list">${det.holdings.slice(0, 10).map((h, i) => `<div class="hold-row"><span style="color:var(--text-muted);min-width:20px">${i + 1}.</span><span style="flex:1">${h.name}</span><span class="hold-pct">${typeof h.pct === 'number' ? h.pct.toFixed(2) + '%' : '--'}</span></div>`).join('')}</div></div>`; }
+        return `<div class="det-head"><div><div class="det-name">${nm}</div><div class="det-code">${code} ${info?.type ? '· ' + info.type : ''} ${sectors.length ? '· ' + sectors.join('/') : ''}</div></div>
+            <div class="det-price"><div class="det-val ${U.gcl(gz)}">${Privacy.mask(gsz)}</div><div class="det-chg fcard-chg ${gc}">${ct}</div>
+            <div style="font-size:.72rem;color:var(--text-muted);margin-top:4px">昨日净值 ${Privacy.mask(est?.dwjz || '--')} · <span class="fcard-fresh"><span class="dot ${fresh.cls}"></span>${fresh.label}</span></div></div></div>
             <div class="flex-r" style="margin-bottom:14px;gap:8px;flex-wrap:wrap">
                 <button class="btn btn-sm ${iw ? 'btn-danger' : 'btn-pri'}" onclick="App.togWl('${code}','${nm.replace(/'/g, "\\'")}')">${iw ? '★ 已自选' : '☆ 加自选'}</button>
                 <button class="btn btn-sm" onclick="App.modalHold('${code}')">添加持仓</button>
                 <button class="btn btn-sm" onclick="App.refOne('${code}')">刷新估值</button>
             </div>
             <div class="det-grid">
-                <div class="det-stat"><div class="det-stat-lbl">昨日净值</div><div class="det-stat-val">${est?.dwjz || '--'}</div></div>
-                <div class="det-stat"><div class="det-stat-lbl">实时估值</div><div class="det-stat-val ${U.gcl(gz)}">${gsz}</div></div>
+                <div class="det-stat"><div class="det-stat-lbl">昨日净值</div><div class="det-stat-val">${Privacy.mask(est?.dwjz || '--')}</div></div>
+                <div class="det-stat"><div class="det-stat-lbl">实时估值</div><div class="det-stat-val ${U.gcl(gz)}">${Privacy.mask(gsz)}</div></div>
                 <div class="det-stat"><div class="det-stat-lbl">估算涨跌</div><div class="det-stat-val ${U.gcl(gz)}">${ct}</div></div>
                 ${perf}${fundInfo}${rankInfo}${hold}
             </div>
@@ -927,503 +584,184 @@ const R = {
             </div><div id="cArea" style="width:100%;height:calc(100% - 38px)"></div></div>`;
     },
 
-    // [P10] 持仓表格增强：支持编辑、显示多次买入均价
-    pfTable(rows, tc, tv, td, tp) {
+    pfTable(rows) {
         if (!rows.length) return '';
-        return `<table class="pf-table"><thead><tr><th>基金名称</th><th>代码</th><th>持有份额</th><th>成本价</th><th>最新估值</th><th>市值</th><th>今日盈亏</th><th>总盈亏</th><th>操作</th></tr></thead><tbody>
-            ${rows.map(r => `<tr>
+        return `<table class="pf-table"><thead><tr><th>基金名称</th><th>代码</th><th>板块</th><th>持有份额</th><th>成本价</th><th>最新估值</th><th>市值</th><th>今日盈亏</th><th>总盈亏</th><th>操作</th></tr></thead><tbody>
+            ${rows.map(r => {
+                const sectors = API._sectors[r.code] || [];
+                return `<tr>
                 <td style="cursor:pointer;color:var(--accent-bright)" onclick="App.view('${r.code}')">${r.name || '未知'}</td>
                 <td class="tbl-num" style="color:var(--text-muted)">${r.code}</td>
+                <td>${sectors.map(s => `<span class="tag-sector">${s}</span>`).join(' ') || '-'}</td>
                 <td class="tbl-num">${Number(r.shares).toFixed(2)}</td>
                 <td class="tbl-num">${Number(r.costPerShare).toFixed(4)}</td>
-                <td class="tbl-num ${U.gcl(r.pp)}">${r.cn.toFixed(4)}</td>
-                <td class="tbl-num">¥${U.fa(r.v)}</td>
-                <td class="tbl-num ${U.gcl(r.dc)}">${r.dc >= 0 ? '+' : ''}¥${r.dc.toFixed(2)}</td>
-                <td class="tbl-num ${U.gcl(r.p)}">${r.p >= 0 ? '+' : ''}¥${r.p.toFixed(2)} <span style="font-size:.68rem;opacity:.7">(${U.fp(r.pp)})</span></td>
-                <td>
-                    <div class="flex-r" style="gap:4px">
-                        <button class="btn btn-sm" onclick="App.editHold(${r.i})">编辑</button>
-                        <button class="btn btn-sm btn-danger" onclick="App.rmPf(${r.i})">删除</button>
-                    </div>
-                </td>
-            </tr>`).join('')}</tbody></table>`;
+                <td class="tbl-num ${U.gcl(r.pp)}">${Privacy.mask(r.cn.toFixed(4))}</td>
+                <td class="tbl-num">${Privacy.mask('¥' + U.fa(r.v))}</td>
+                <td class="tbl-num ${U.gcl(r.dc)}">${r.dc >= 0 ? '+' : ''}¥${Privacy.mask(r.dc.toFixed(2))}</td>
+                <td class="tbl-num ${U.gcl(r.p)}">${r.p >= 0 ? '+' : ''}¥${Privacy.mask(r.p.toFixed(2))} <span style="font-size:.68rem;opacity:.7">(${U.fp(r.pp)})</span></td>
+                <td><div class="flex-r" style="gap:4px"><button class="btn btn-sm" onclick="App.editHold(${r.i})">编辑</button><button class="btn btn-sm btn-danger" onclick="App.rmPf(${r.i})">删除</button></div></td>
+            </tr>`;
+            }).join('')}</tbody></table>`;
     },
 
-    empty(icon, txt, btn) {
-        return `<div class="empty"><div class="empty-icon">${icon}</div><div class="empty-txt">${txt}</div>${btn ? `<button class="btn btn-pri" onclick="${btn.o}">${btn.t}</button>` : ''}</div>`;
-    }
+    rankItem(item, idx) {
+        const numClass = idx === 0 ? 'top1' : idx === 1 ? 'top2' : idx === 2 ? 'top3' : '';
+        const icon = idx === 0 ? '🥇' : idx === 1 ? '🥈' : idx === 2 ? '🥉' : `<span class="rank-num ${numClass}">${idx + 1}</span>`;
+        return `<div class="rank-item" onclick="App.view('${item.code}')">
+            <div style="min-width:28px;text-align:center">${icon}</div>
+            <div class="rank-info"><div class="rank-name">${item.name}</div><div class="rank-code">${item.code} · ${item.type || ''}</div></div>
+            <div class="rank-data"><div class="rank-chg">近1年 ${U.fp(item.chg_1y)}</div><div class="rank-chg">近3月 ${U.fp(item.chg_3m)}</div></div>
+        </div>`;
+    },
+
+    empty(icon, txt, btn) { return `<div class="empty"><div class="empty-icon">${icon}</div><div class="empty-txt">${txt}</div>${btn ? `<button class="btn btn-pri" onclick="${btn.o}">${btn.t}</button>` : ''}</div>`; }
 };
 
-/* ====== [P6] CHART - 分时图 + 历史走势 ====== */
+/* Chart */
 const Ch = {
-    _i: null,
-
-    dispose() { if (this._i) { this._i.dispose(); this._i = null; } },
-
-    // [P6] 今日分时图
-    intraday(cid, data) {
-        const el = document.getElementById(cid);
-        if (!el || !data?.length) {
-            if (el) el.innerHTML = '<div class="empty" style="padding:20px"><div class="empty-txt">暂无分时数据</div></div>';
-            return;
-        }
-        this.dispose();
-        const ch = echarts.init(el, null, { renderer: 'canvas' });
-        this._i = ch;
-        const times = data.map(d => U.formatTime(d.time)),
-              vals = data.map(d => d.value),
-              chgs = data.map(d => d.chg),
-              baseVal = data[0]?.value || 0;
-
-        ch.setOption({
-            backgroundColor: 'transparent',
-            tooltip: {
-                trigger: 'axis', backgroundColor: 'rgba(15,21,37,.95)', borderColor: 'rgba(99,132,255,.2)',
-                textStyle: { color: '#eef2ff', fontFamily: 'DM Mono, monospace', fontSize: 12 },
-                formatter: p => {
-                    const v = p[0], idx = v.dataIndex;
-                    return `<div style="font-weight:500">${times[idx]}</div>
-                            <div style="margin-top:3px">估值: <span style="color:#6384ff">${vals[idx].toFixed(4)}</span></div>
-                            <div>涨跌: <span style="color:${chgs[idx] >= 0 ? '#ef4444' : '#10b981'}">${chgs[idx] >= 0 ? '+' : ''}${chgs[idx].toFixed(2)}%</span></div>`;
-                }
-            },
-            grid: { left: 10, right: 10, top: 20, bottom: 28, containLabel: true },
-            xAxis: {
-                type: 'category', data: times, boundaryGap: false,
-                axisLine: { lineStyle: { color: 'rgba(99,132,255,.1)' } },
-                axisLabel: { color: '#4a5568', fontSize: 10, fontFamily: 'DM Mono, monospace', interval: Math.floor(times.length / 6) },
-                axisTick: { show: false }, splitLine: { show: false }
-            },
-            yAxis: {
-                type: 'value', scale: true,
-                axisLine: { show: false },
-                axisLabel: { color: '#4a5568', fontSize: 10, fontFamily: 'DM Mono, monospace' },
-                axisTick: { show: false },
-                splitLine: { lineStyle: { color: 'rgba(99,132,255,.06)' } }
-            },
-            // 基准线
-            series: [
-                { type: 'line', data: vals, smooth: true, symbol: 'none', lineStyle: { color: '#6384ff', width: 2 },
-                  areaStyle: { color: { type: 'linear', x: 0, y: 0, x2: 0, y2: 1, colorStops: [{ offset: 0, color: 'rgba(99,132,255,.22)' }, { offset: 1, color: 'rgba(99,132,255,.01)' }] } },
-                  markLine: { silent: true, symbol: 'none', lineStyle: { color: 'rgba(148,163,184,.3)', type: 'dashed' },
-                    data: [{ yAxis: baseVal, label: { show: true, formatter: '昨收 ' + baseVal.toFixed(4), color: '#8892a8', fontSize: 10 } }]
-                  }
-                }
-            ],
-            animationDuration: 500
-        });
-        new ResizeObserver(() => ch.resize()).observe(el);
-    },
-
-    nw(cid, data) {
-        const el = document.getElementById(cid);
-        if (!el || !data?.length) return;
-        this.dispose();
-        const ch = echarts.init(el, null, { renderer: 'canvas' });
-        this._i = ch;
-        const dates = data.map(d => { const t = new Date(d.x); return t.getFullYear() + '-' + U.pad(t.getMonth() + 1) + '-' + U.pad(t.getDate()); }),
-              vals = data.map(d => d.y), mn = Math.min(...vals), mx = Math.max(...vals), pd = (mx - mn) * 0.08;
-        ch.setOption({
-            backgroundColor: 'transparent',
-            tooltip: { trigger: 'axis', backgroundColor: 'rgba(15,21,37,.95)', borderColor: 'rgba(99,132,255,.2)',
-                textStyle: { color: '#eef2ff', fontFamily: 'DM Mono, monospace', fontSize: 12 },
-                formatter: p => { const v = p[0]; return `<div style="font-weight:500">${v.name}</div><div style="margin-top:3px">净值: <span style="color:#6384ff">${v.value.toFixed(4)}</span></div>`; } },
-            grid: { left: 10, right: 10, top: 10, bottom: 28, containLabel: true },
-            xAxis: { type: 'category', data: dates, axisLine: { lineStyle: { color: 'rgba(99,132,255,.1)' } }, axisLabel: { color: '#4a5568', fontSize: 10, fontFamily: 'DM Mono, monospace', interval: 'auto' }, axisTick: { show: false }, splitLine: { show: false } },
-            yAxis: { type: 'value', min: mn - pd, max: mx + pd, axisLine: { show: false }, axisLabel: { color: '#4a5568', fontSize: 10, fontFamily: 'DM Mono, monospace' }, axisTick: { show: false }, splitLine: { lineStyle: { color: 'rgba(99,132,255,.06)' } } },
-            series: [{ type: 'line', data: vals, smooth: true, symbol: 'none', lineStyle: { color: '#6384ff', width: 2 },
-                areaStyle: { color: { type: 'linear', x: 0, y: 0, x2: 0, y2: 1, colorStops: [{ offset: 0, color: 'rgba(99,132,255,.22)' }, { offset: 1, color: 'rgba(99,132,255,.01)' }] } } }],
-            animationDuration: 700, animationEasing: 'cubicOut'
-        });
-        new ResizeObserver(() => ch.resize()).observe(el);
-    }
+    _i: null, dispose() { if (this._i) { this._i.dispose(); this._i = null; } },
+    intraday(cid, data) { const el = document.getElementById(cid); if (!el || !data?.length) { if (el) el.innerHTML = '<div class="empty" style="padding:20px"><div class="empty-txt">暂无分时数据</div></div>'; return; } this.dispose(); const ch = echarts.init(el, null, { renderer: 'canvas' }); this._i = ch; const times = data.map(d => U.formatTime(d.time)), vals = data.map(d => d.value), chgs = data.map(d => d.chg), baseVal = data[0]?.value || 0; ch.setOption({ backgroundColor: 'transparent', tooltip: { trigger: 'axis', backgroundColor: 'rgba(15,21,37,.95)', borderColor: 'rgba(99,132,255,.2)', textStyle: { color: '#eef2ff', fontFamily: 'DM Mono, monospace', fontSize: 12 }, formatter: p => { const v = p[0], idx = v.dataIndex; return `<div style="font-weight:500">${times[idx]}</div><div style="margin-top:3px">估值: <span style="color:#6384ff">${vals[idx].toFixed(4)}</span></div><div>涨跌: <span style="color:${chgs[idx] >= 0 ? '#ef4444' : '#10b981'}">${chgs[idx] >= 0 ? '+' : ''}${chgs[idx].toFixed(2)}%</span></div>`; } }, grid: { left: 10, right: 10, top: 20, bottom: 28, containLabel: true }, xAxis: { type: 'category', data: times, boundaryGap: false, axisLine: { lineStyle: { color: 'rgba(99,132,255,.1)' } }, axisLabel: { color: '#4a5568', fontSize: 10, interval: Math.floor(times.length / 6) }, axisTick: { show: false }, splitLine: { show: false } }, yAxis: { type: 'value', scale: true, axisLine: { show: false }, axisLabel: { color: '#4a5568', fontSize: 10 }, axisTick: { show: false }, splitLine: { lineStyle: { color: 'rgba(99,132,255,.06)' } } }, series: [{ type: 'line', data: vals, smooth: true, symbol: 'none', lineStyle: { color: '#6384ff', width: 2 }, areaStyle: { color: { type: 'linear', x: 0, y: 0, x2: 0, y2: 1, colorStops: [{ offset: 0, color: 'rgba(99,132,255,.22)' }, { offset: 1, color: 'rgba(99,132,255,.01)' }] } }, markLine: { silent: true, symbol: 'none', lineStyle: { color: 'rgba(148,163,184,.3)', type: 'dashed' }, data: [{ yAxis: baseVal, label: { show: true, formatter: '昨收 ' + baseVal.toFixed(4), color: '#8892a8', fontSize: 10 } }] } }], animationDuration: 500 }); new ResizeObserver(() => ch.resize()).observe(el); },
+    nw(cid, data) { const el = document.getElementById(cid); if (!el || !data?.length) return; this.dispose(); const ch = echarts.init(el, null, { renderer: 'canvas' }); this._i = ch; const dates = data.map(d => { const t = new Date(d.x); return t.getFullYear() + '-' + U.pad(t.getMonth() + 1) + '-' + U.pad(t.getDate()); }), vals = data.map(d => d.y), mn = Math.min(...vals), mx = Math.max(...vals), pd = (mx - mn) * 0.08; ch.setOption({ backgroundColor: 'transparent', tooltip: { trigger: 'axis', backgroundColor: 'rgba(15,21,37,.95)', borderColor: 'rgba(99,132,255,.2)', textStyle: { color: '#eef2ff', fontFamily: 'DM Mono, monospace', fontSize: 12 }, formatter: p => { const v = p[0]; return `<div style="font-weight:500">${v.name}</div><div style="margin-top:3px">净值: <span style="color:#6384ff">${v.value.toFixed(4)}</span></div>`; } }, grid: { left: 10, right: 10, top: 10, bottom: 28, containLabel: true }, xAxis: { type: 'category', data: dates, axisLine: { lineStyle: { color: 'rgba(99,132,255,.1)' } }, axisLabel: { color: '#4a5568', fontSize: 10, interval: 'auto' }, axisTick: { show: false }, splitLine: { show: false } }, yAxis: { type: 'value', min: mn - pd, max: mx + pd, axisLine: { show: false }, axisLabel: { color: '#4a5568', fontSize: 10 }, axisTick: { show: false }, splitLine: { lineStyle: { color: 'rgba(99,132,255,.06)' } } }, series: [{ type: 'line', data: vals, smooth: true, symbol: 'none', lineStyle: { color: '#6384ff', width: 2 }, areaStyle: { color: { type: 'linear', x: 0, y: 0, x2: 0, y2: 1, colorStops: [{ offset: 0, color: 'rgba(99,132,255,.22)' }, { offset: 1, color: 'rgba(99,132,255,.01)' }] } } }], animationDuration: 700 }); new ResizeObserver(() => ch.resize()).observe(el); }
 };
 
-/* ====== APP ====== */
+/* APP */
 const App = {
-    _rt: null, _ct: null, _curCode: null, _detCache: {},
+    _rt: null, _ct: null, _curCode: null, _detCache: {}, _typeFilter: '',
 
     async init() {
-        Theme.init();
-        S.init();
-        this.loadSettings();
-        this.bindTab();
-        this.bindSearch();
-        this.clock();
-        this.renderDash();
-        this.renderPort();
-        this.renderWatch();
+        Theme.init(); Privacy.init(); S.init();
+        this.loadSettings(); this.bindTab(); this.bindSearch(); this.clock();
+        this.renderDash(); this.renderPort(); this.renderWatch();
         try { await API.loadList(); this.toast('基金列表加载完成', 'success'); } catch(e) { this.toast(e.message, 'error'); }
-        this.refIdx();
-        if (S.allCodes().length) this.refreshAll();
+        this.refIdx(); if (S.allCodes().length) this.refreshAll();
         document.getElementById('autoRef').onchange = e => e.target.checked ? this.startAR() : this.stopAR();
         document.getElementById('mBg').onclick = e => { if (e.target === e.currentTarget) this.closeM(); };
         this.startAR();
+        // 预加载板块信息
+        S.allCodes().forEach(c => API.fetchSector(c).catch(() => {}));
     },
 
-    // [P14] 主题切换
     toggleTheme() { Theme.toggle(); },
+    togglePrivacy() { Privacy.toggle(); this.renderDash(); this.renderPort(); this.renderWatch(); },
 
-    // [P5] 动态刷新间隔
-    getRefreshInterval() {
-        if (!document.getElementById('autoRef')?.checked) return null;
-        const saved = parseInt(localStorage.getItem(C.LS_SETTINGS + '_interval'));
-        const interval = isNaN(saved) ? 30000 : saved * 1000;
-        // 交易时段用短间隔，非交易时段用长间隔
-        return U.trading() ? Math.min(interval, C.REFRESH_TRADING) : C.REFRESH_IDLE;
-    },
-
-    loadSettings() {
-        try {
-            const s = localStorage.getItem(C.LS_SETTINGS);
-            if (s) {
-                const settings = JSON.parse(s);
-                if (settings.interval) document.getElementById('setInterval').value = settings.interval;
-            }
-        } catch(e) {}
-        this.updateCacheInfo();
-    },
-
-    saveSettings() {
-        const interval = document.getElementById('setInterval').value;
-        localStorage.setItem(C.LS_SETTINGS, JSON.stringify({ interval }));
-        this.startAR(); // 重启定时器
-        this.toast('设置已保存', 'success');
-    },
-
-    updateCacheInfo() {
-        const el = document.getElementById('cacheInfo');
-        if (!el) return;
-        let size = 0;
-        for (let key in localStorage) {
-            if (key.startsWith('mm_')) size += localStorage.getItem(key)?.length || 0;
-        }
-        el.textContent = `缓存大小: ${(size / 1024).toFixed(1)} KB`;
-    },
-
-    clearCache() {
-        const keys = Object.keys(localStorage).filter(k => k.startsWith('mm_'));
-        keys.forEach(k => localStorage.removeItem(k));
-        S.est = {}; S.intraday = {};
-        this.updateCacheInfo();
-        this.toast('缓存已清除', 'info');
-        this.renderDash();
-    },
-
-    // [P16] 导出数据
-    exportData() {
-        const data = S.exportAll();
-        const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url; a.download = `猫猫基金宝_${new Date().toISOString().slice(0, 10)}.json`;
-        a.click(); URL.revokeObjectURL(url);
-        this.toast('数据已导出', 'success');
-    },
-
-    // [P16] 导入数据
+    getRefreshInterval() { if (!document.getElementById('autoRef')?.checked) return null; const saved = parseInt(localStorage.getItem(C.LS_SETTINGS + '_interval')); const interval = isNaN(saved) ? 30000 : saved * 1000; return U.trading() ? Math.min(interval, C.REFRESH_TRADING) : C.REFRESH_IDLE; },
+    loadSettings() { try { const s = localStorage.getItem(C.LS_SETTINGS); if (s) { const settings = JSON.parse(s); if (settings.interval) document.getElementById('setInterval').value = settings.interval; } } catch(e) {} document.getElementById('setApiKey').value = localStorage.getItem('mm_mimo_key') || ''; this.updateCacheInfo(); },
+    saveSettings() { const interval = document.getElementById('setInterval').value; const apiKey = document.getElementById('setApiKey').value.trim(); localStorage.setItem(C.LS_SETTINGS, JSON.stringify({ interval })); if (apiKey) localStorage.setItem('mm_mimo_key', apiKey); else localStorage.removeItem('mm_mimo_key'); this.startAR(); this.toast('设置已保存', 'success'); },
+    updateCacheInfo() { const el = document.getElementById('cacheInfo'); if (!el) return; let size = 0; for (let key in localStorage) { if (key.startsWith('mm_')) size += localStorage.getItem(key)?.length || 0; } el.textContent = `缓存: ${(size / 1024).toFixed(1)} KB`; },
+    clearCache() { const keys = Object.keys(localStorage).filter(k => k.startsWith('mm_')); keys.forEach(k => localStorage.removeItem(k)); S.est = {}; S.intraday = {}; this.updateCacheInfo(); this.toast('缓存已清除', 'info'); this.renderDash(); },
+    exportData() { const data = S.exportAll(); const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' }); const url = URL.createObjectURL(blob); const a = document.createElement('a'); a.href = url; a.download = `猫猫基金宝_${new Date().toISOString().slice(0, 10)}.json`; a.click(); URL.revokeObjectURL(url); this.toast('数据已导出', 'success'); },
     importData() { document.getElementById('importFile').click(); },
+    handleImport(event) { const file = event.target.files[0]; if (!file) return; const reader = new FileReader(); reader.onload = e => { try { const data = JSON.parse(e.target.result); S.importAll(data); this.renderDash(); this.renderPort(); this.renderWatch(); this.toast('导入成功', 'success'); } catch(e) { this.toast('导入失败', 'error'); } }; reader.readAsText(file); event.target.value = ''; },
 
-    handleImport(event) {
-        const file = event.target.files[0];
-        if (!file) return;
-        const reader = new FileReader();
-        reader.onload = e => {
-            try {
-                const data = JSON.parse(e.target.result);
-                if (data.version !== '2.0') { this.toast('不支持的备份版本', 'error'); return; }
-                S.importAll(data);
-                this.renderDash(); this.renderPort(); this.renderWatch();
-                this.toast(`导入成功：${data.watchlist?.length || 0} 只自选，${data.portfolio?.length || 0} 条持仓`, 'success');
-            } catch(e) { this.toast('导入失败：文件格式错误', 'error'); }
-        };
-        reader.readAsText(file);
-        event.target.value = '';
-    },
+    bindTab() { document.querySelectorAll('.ntab').forEach(t => t.onclick = () => { document.querySelectorAll('.ntab').forEach(x => x.classList.remove('active')); document.querySelectorAll('.tcont').forEach(x => x.classList.remove('active')); t.classList.add('active'); document.getElementById('t-' + t.dataset.t).classList.add('active'); if (t.dataset.t === 'port') this.renderPort(); if (t.dataset.t === 'watch') this.renderWatch(); if (t.dataset.t === 'rank') this.loadRank(); }); },
 
-    bindTab() {
-        document.querySelectorAll('.ntab').forEach(t => t.onclick = () => {
-            document.querySelectorAll('.ntab').forEach(x => x.classList.remove('active'));
-            document.querySelectorAll('.tcont').forEach(x => x.classList.remove('active'));
-            t.classList.add('active');
-            document.getElementById('t-' + t.dataset.t).classList.add('active');
-            if (t.dataset.t === 'port') this.renderPort();
-            if (t.dataset.t === 'watch') this.renderWatch();
-        });
-    },
-
-    // [P11] 增强搜索：筛选、最近搜索
-    bindSearch() {
-        const inp = document.getElementById('sInput'), drp = document.getElementById('sDrop'); let tm;
-        let typeFilter = '';
-        inp.addEventListener('input', e => {
-            clearTimeout(tm); const v = e.target.value.trim();
-            if (!v) { this.showSearchDefault(); return; }
-            tm = setTimeout(() => { const r = API.search(v, typeFilter); this.showSR(r); }, 200);
-        });
-        inp.addEventListener('focus', () => {
-            const v = inp.value.trim();
-            if (v) { this.showSR(API.search(v, typeFilter)); }
-            else { this.showSearchDefault(); }
-        });
-        document.addEventListener('click', e => { if (!e.target.closest('.search-box')) drp.classList.remove('open'); });
-    },
-
-    showSearchDefault() {
-        const drp = document.getElementById('sDrop');
-        // 最近搜索
-        let recent = [];
-        try { recent = JSON.parse(localStorage.getItem(C.LS_SEARCH_HIST) || '[]'); } catch(e) {}
-        let html = '';
-        if (recent.length) {
-            html += `<div class="sr-recent"><span>最近搜索</span><a onclick="App.clearSearchHist()">清除</a></div>`;
-            html += recent.slice(0, 8).map(code => {
-                const name = S.info[code]?.name || code;
-                return `<div class="sr-item" onclick="App.pickSR('${code}')"><span class="sr-code">${code}</span><span class="sr-name">${name}</span></div>`;
-            }).join('');
-        }
-        // 基金类型筛选
-        html += `<div class="sr-filter">
-            <button class="sr-fbtn active" onclick="App.setFilter('',this)">全部</button>
-            <button class="sr-fbtn" onclick="App.setFilter('股票型',this)">股票型</button>
-            <button class="sr-fbtn" onclick="App.setFilter('混合型',this)">混合型</button>
-            <button class="sr-fbtn" onclick="App.setFilter('债券型',this)">债券型</button>
-            <button class="sr-fbtn" onclick="App.setFilter('指数型',this)">指数型</button>
-            <button class="sr-fbtn" onclick="App.setFilter('货币型',this)">货币型</button>
-            <button class="sr-fbtn" onclick="App.setFilter('QDII',this)">QDII</button>
-        </div>`;
-        if (!recent.length) html += `<div style="padding:20px;text-align:center;color:var(--text-muted);font-size:.82rem">输入基金代码、名称或拼音搜索</div>`;
-        drp.innerHTML = html;
-        drp.classList.add('open');
-    },
-
-    setFilter(type, btn) {
-        document.querySelectorAll('.sr-fbtn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        this._typeFilter = type;
-        const inp = document.getElementById('sInput');
-        if (inp.value.trim()) this.showSR(API.search(inp.value.trim(), type));
-    },
-
-    saveSearchHist(code) {
-        let recent = [];
-        try { recent = JSON.parse(localStorage.getItem(C.LS_SEARCH_HIST) || '[]'); } catch(e) {}
-        recent = recent.filter(c => c !== code);
-        recent.unshift(code);
-        localStorage.setItem(C.LS_SEARCH_HIST, JSON.stringify(recent.slice(0, 20)));
-    },
-
+    bindSearch() { const inp = document.getElementById('sInput'), drp = document.getElementById('sDrop'); let tm; inp.addEventListener('input', e => { clearTimeout(tm); const v = e.target.value.trim(); if (!v) { this.showSearchDefault(); return; } tm = setTimeout(() => { const r = API.search(v, this._typeFilter); this.showSR(r); }, 200); }); inp.addEventListener('focus', () => { const v = inp.value.trim(); if (v) this.showSR(API.search(v, this._typeFilter)); else this.showSearchDefault(); }); document.addEventListener('click', e => { if (!e.target.closest('.search-box')) drp.classList.remove('open'); }); },
+    showSearchDefault() { const drp = document.getElementById('sDrop'); let recent = []; try { recent = JSON.parse(localStorage.getItem(C.LS_SEARCH_HIST) || '[]'); } catch(e) {} let html = ''; if (recent.length) { html += `<div class="sr-recent"><span>最近搜索</span><a onclick="App.clearSearchHist()">清除</a></div>`; html += recent.slice(0, 8).map(code => { const name = S.info[code]?.name || code; return `<div class="sr-item" onclick="App.pickSR('${code}')"><span class="sr-code">${code}</span><span class="sr-name">${name}</span></div>`; }).join(''); } html += `<div class="sr-filter"><button class="sr-fbtn active" onclick="App.setFilter('',this)">全部</button><button class="sr-fbtn" onclick="App.setFilter('股票型',this)">股票型</button><button class="sr-fbtn" onclick="App.setFilter('混合型',this)">混合型</button><button class="sr-fbtn" onclick="App.setFilter('债券型',this)">债券型</button><button class="sr-fbtn" onclick="App.setFilter('指数型',this)">指数型</button><button class="sr-fbtn" onclick="App.setFilter('货币型',this)">货币型</button><button class="sr-fbtn" onclick="App.setFilter('QDII',this)">QDII</button></div>`; if (!recent.length) html += `<div style="padding:20px;text-align:center;color:var(--text-muted);font-size:.82rem">输入基金代码、名称或拼音搜索</div>`; drp.innerHTML = html; drp.classList.add('open'); },
+    setFilter(type, btn) { document.querySelectorAll('.sr-fbtn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); this._typeFilter = type; const inp = document.getElementById('sInput'); if (inp.value.trim()) this.showSR(API.search(inp.value.trim(), type)); },
+    saveSearchHist(code) { let recent = []; try { recent = JSON.parse(localStorage.getItem(C.LS_SEARCH_HIST) || '[]'); } catch(e) {} recent = recent.filter(c => c !== code); recent.unshift(code); localStorage.setItem(C.LS_SEARCH_HIST, JSON.stringify(recent.slice(0, 20))); },
     clearSearchHist() { localStorage.removeItem(C.LS_SEARCH_HIST); this.showSearchDefault(); },
+    showSR(rs) { const drp = document.getElementById('sDrop'); if (!rs.length) { drp.innerHTML = `<div class="sr-filter"><button class="sr-fbtn active" onclick="App.setFilter('',this)">全部</button></div><div style="padding:14px;text-align:center;color:var(--text-muted)">未找到</div>`; drp.classList.add('open'); return; } let html = `<div class="sr-filter"><button class="sr-fbtn ${!this._typeFilter ? 'active' : ''}" onclick="App.setFilter('',this)">全部</button><button class="sr-fbtn" onclick="App.setFilter('股票型',this)">股票型</button><button class="sr-fbtn" onclick="App.setFilter('混合型',this)">混合型</button><button class="sr-fbtn" onclick="App.setFilter('债券型',this)">债券型</button></div>`; html += rs.map(f => { const isH = S.pf.some(h => h.code === f.code); return `<div class="sr-item" onclick="App.pickSR('${f.code}')"><span class="sr-code">${f.code}</span><span class="sr-name">${f.name}${isH ? ' <span class="tag-hold">持有</span>' : ''}</span><span class="sr-type">${f.type}</span></div>`; }).join(''); drp.innerHTML = html; drp.classList.add('open'); },
+    pickSR(code) { document.getElementById('sDrop').classList.remove('open'); document.getElementById('sInput').value = ''; const f = API._list?.find(x => x.code === code); if (f) S.info[code] = { ...(S.info[code] || {}), name: f.name, type: f.type }; this.saveSearchHist(code); this.view(code); },
 
-    showSR(rs) {
-        const drp = document.getElementById('sDrop');
-        if (!rs.length) { drp.innerHTML = `<div class="sr-filter"><button class="sr-fbtn active" onclick="App.setFilter('',this)">全部</button><button class="sr-fbtn" onclick="App.setFilter('股票型',this)">股票型</button><button class="sr-fbtn" onclick="App.setFilter('混合型',this)">混合型</button><button class="sr-fbtn" onclick="App.setFilter('债券型',this)">债券型</button><button class="sr-fbtn" onclick="App.setFilter('指数型',this)">指数型</button></div><div style="padding:14px;text-align:center;color:var(--text-muted)">未找到相关基金</div>`; drp.classList.add('open'); return; }
-        let html = `<div class="sr-filter"><button class="sr-fbtn ${!this._typeFilter ? 'active' : ''}" onclick="App.setFilter('',this)">全部</button><button class="sr-fbtn" onclick="App.setFilter('股票型',this)">股票型</button><button class="sr-fbtn" onclick="App.setFilter('混合型',this)">混合型</button><button class="sr-fbtn" onclick="App.setFilter('债券型',this)">债券型</button><button class="sr-fbtn" onclick="App.setFilter('指数型',this)">指数型</button></div>`;
-        html += rs.map(f => `<div class="sr-item" onclick="App.pickSR('${f.code}')"><span class="sr-code">${f.code}</span><span class="sr-name">${f.name}</span><span class="sr-type">${f.type}</span></div>`).join('');
-        drp.innerHTML = html;
-        drp.classList.add('open');
-    },
-
-    pickSR(code) {
-        document.getElementById('sDrop').classList.remove('open');
-        document.getElementById('sInput').value = '';
-        const f = API._list?.find(x => x.code === code);
-        if (f) S.info[code] = { ...(S.info[code] || {}), name: f.name, type: f.type };
-        this.saveSearchHist(code);
-        this.view(code);
-    },
-
-    switchTab(name) {
-        document.querySelectorAll('.ntab').forEach(x => x.classList.remove('active'));
-        document.querySelectorAll('.tcont').forEach(x => x.classList.remove('active'));
-        document.querySelector(`.ntab[data-t="${name}"]`)?.classList.add('active');
-        document.getElementById('t-' + name)?.classList.add('active');
-    },
+    switchTab(name) { document.querySelectorAll('.ntab').forEach(x => x.classList.remove('active')); document.querySelectorAll('.tcont').forEach(x => x.classList.remove('active')); document.querySelector(`.ntab[data-t="${name}"]`)?.classList.add('active'); document.getElementById('t-' + name)?.classList.add('active'); },
 
     async view(code) {
-        this.switchTab('detail');
-        this._curCode = code;
-        const body = document.getElementById('detBody');
-        body.innerHTML = '<div class="ld"><div class="ld-spin"></div></div>';
+        this.switchTab('detail'); this._curCode = code;
+        const body = document.getElementById('detBody'); body.innerHTML = '<div class="ld"><div class="ld-spin"></div></div>';
         try {
             const [est, det, info, rank] = await Promise.all([
                 API.fetchEst(code).then(d => API.validateEst(d)).catch(() => S.getEst(code)),
-                this._getDetail(code),
-                API.fetchFundInfo(code).catch(() => null),
-                API.fetchFundRank(code).catch(() => null)
+                this._getDetail(code), API.fetchFundInfo(code).catch(() => null), API.fetchFundRank(code).catch(() => null)
             ]);
             if (est) { S.upEst(code, est); S.info[code] = { name: est.name, ...(S.info[code] || {}) }; }
             if (info) S.info[code] = { ...S.info[code], ...info };
+            API.fetchSector(code).catch(() => {});
             body.innerHTML = R.detail(code, est, det, info, rank);
             this.loadCh(code, 'intra');
         } catch(e) { body.innerHTML = R.empty('❌', '加载失败: ' + e.message); }
     },
 
-    async _getDetail(code) {
-        if (this._detCache[code]) return this._detCache[code];
-        try { const d = await API.fetchDetail(code); this._detCache[code] = d; return d; } catch(e) { return null; }
-    },
-
-    // [P6] 图表类型切换
-    async loadCh(code, type, tab) {
-        if (tab) { tab.parentElement.querySelectorAll('.ch-tab').forEach(x => x.classList.remove('active')); tab.classList.add('active'); }
-        if (type === 'intra') {
-            // 优先从本地缓存的分时数据
-            let data = S.getIntraday(code);
-            // 如果本地数据太少，尝试从API获取
-            if (data.length < 5) {
-                try {
-                    const apiData = await API.fetchIntraday(code);
-                    if (apiData.length > data.length) data = apiData;
-                } catch(e) {}
-            }
-            Ch.intraday('cArea', data);
-        } else {
-            let det = this._detCache[code];
-            if (!det) det = await this._getDetail(code);
-            if (!det) return;
-            const data = type === 'ac' ? det.acTrend : det.nwTrend;
-            if (data?.length) Ch.nw('cArea', data);
-        }
-    },
-
-    async refOne(code) {
-        try {
-            const d = await API.fetchEst(code);
-            const validated = API.validateEst(d);
-            S.upEst(code, validated);
-            this.renderDash(); this.renderWatch();
-            if (this._curCode === code) this.view(code);
-        } catch(e) { this.toast('刷新失败', 'error'); }
-    },
-
-    async refreshAll() {
-        const codes = S.allCodes(); if (!codes.length) return;
-        document.getElementById('rfrDot').classList.add('on');
-        document.getElementById('rfrLbl').textContent = '刷新中...';
-        let ok = 0;
-        for (const c of codes) {
-            try {
-                const d = await API.fetchEst(c);
-                const validated = API.validateEst(d);
-                S.upEst(c, validated);
-                S.info[c] = { name: validated.name, ...(S.info[c] || {}) };
-                ok++;
-            } catch(e) {}
-        }
-        this.renderDash(); this.renderWatch(); this.renderPort();
-        const isTrading = U.trading();
-        document.getElementById('rfrLbl').textContent = isTrading ? `交易中 · ${ok}/${codes.length}` : `已收盘 · ${ok}/${codes.length}`;
-    },
-
-    async refIdx() {
-        try {
-            const d = await API.fetchIdx();
-            document.getElementById('ticker').innerHTML = d.length ? R.ticker(d) : '<div class="tk-item"><span class="tk-name">市场数据暂时不可用</span></div>';
-        } catch(e) {}
-    },
-
-    // [P5] 智能刷新：交易时段短间隔，非交易时段长间隔
-    startAR() {
-        this.stopAR();
-        const tick = () => {
-            this.refreshAll();
-            this.refIdx();
-            // 动态调整下次刷新时间
-            const next = this.getRefreshInterval();
-            if (next && document.getElementById('autoRef')?.checked) {
-                this._rt = setTimeout(tick, next);
-            }
-        };
-        const first = this.getRefreshInterval();
-        if (first) this._rt = setTimeout(tick, first);
-        document.getElementById('rfrDot').classList.add('on');
-    },
-
-    stopAR() { if (this._rt) { clearTimeout(this._rt); clearInterval(this._rt); this._rt = null; } },
-
-    clock() {
-        const u = () => { const n = new Date(); document.getElementById('clock').textContent = `${n.getFullYear()}-${U.pad(n.getMonth() + 1)}-${U.pad(n.getDate())} ${U.pad(n.getHours())}:${U.pad(n.getMinutes())}:${U.pad(n.getSeconds())}`; };
-        u(); this._ct = setInterval(u, 1000);
-    },
+    async _getDetail(code) { if (this._detCache[code]) return this._detCache[code]; try { const d = await API.fetchDetail(code); this._detCache[code] = d; return d; } catch(e) { return null; } },
+    async loadCh(code, type, tab) { if (tab) { tab.parentElement.querySelectorAll('.ch-tab').forEach(x => x.classList.remove('active')); tab.classList.add('active'); } if (type === 'intra') { let data = S.getIntraday(code); if (data.length < 5) { try { const apiData = await API.fetchIntraday(code); if (apiData.length > data.length) data = apiData; } catch(e) {} } Ch.intraday('cArea', data); } else { let det = this._detCache[code]; if (!det) det = await this._getDetail(code); if (!det) return; const data = type === 'ac' ? det.acTrend : det.nwTrend; if (data?.length) Ch.nw('cArea', data); } },
+    async refOne(code) { try { const d = await API.fetchEst(code); const validated = API.validateEst(d); S.upEst(code, validated); this.renderDash(); this.renderWatch(); if (this._curCode === code) this.view(code); } catch(e) { this.toast('刷新失败', 'error'); } },
+    async refreshAll() { const codes = S.allCodes(); if (!codes.length) return; document.getElementById('rfrDot').classList.add('on'); document.getElementById('rfrLbl').textContent = '刷新中...'; let ok = 0; for (const c of codes) { try { const d = await API.fetchEst(c); const validated = API.validateEst(d); S.upEst(c, validated); S.info[c] = { name: validated.name, ...(S.info[c] || {}) }; API.fetchSector(c).catch(() => {}); ok++; } catch(e) {} } this.renderDash(); this.renderWatch(); this.renderPort(); document.getElementById('rfrLbl').textContent = U.trading() ? `交易中 · ${ok}/${codes.length}` : `已收盘 · ${ok}/${codes.length}`; },
+    async refIdx() { try { const d = await API.fetchIdx(); document.getElementById('ticker').innerHTML = d.length ? R.ticker(d) : '<div class="tk-item"><span class="tk-name">市场数据暂时不可用</span></div>'; } catch(e) {} },
+    startAR() { this.stopAR(); const tick = () => { this.refreshAll(); this.refIdx(); const next = this.getRefreshInterval(); if (next && document.getElementById('autoRef')?.checked) this._rt = setTimeout(tick, next); }; const first = this.getRefreshInterval(); if (first) this._rt = setTimeout(tick, first); document.getElementById('rfrDot').classList.add('on'); },
+    stopAR() { if (this._rt) { clearTimeout(this._rt); this._rt = null; } },
+    clock() { const u = () => { const n = new Date(); document.getElementById('clock').textContent = `${n.getFullYear()}-${U.pad(n.getMonth() + 1)}-${U.pad(n.getDate())} ${U.pad(n.getHours())}:${U.pad(n.getMinutes())}:${U.pad(n.getSeconds())}`; }; u(); this._ct = setInterval(u, 1000); },
 
     renderDash() {
         const g = document.getElementById('dashGrid'), codes = [...new Set([...S.wl, ...S.pf.map(h => h.code)])];
         if (!codes.length) { g.innerHTML = R.empty('📊', '暂无监控基金，请搜索并添加基金开始使用', { t: '搜索基金', o: "document.getElementById('sInput').focus()" }); return; }
         g.innerHTML = codes.map(c => R.fcard(c, S.getEst(c))).join('');
         document.getElementById('fCnt').textContent = S.allCodes().length + ' 只基金';
+        Privacy.apply();
     },
 
-    renderWatch() {
-        const g = document.getElementById('watchGrid');
-        if (!S.wl.length) { g.innerHTML = R.empty('⭐', '暂无自选基金，在搜索框搜索并添加吧'); return; }
-        g.innerHTML = S.wl.map(c => R.fcard(c, S.getEst(c))).join('');
+    renderWatch() { const g = document.getElementById('watchGrid'); if (!S.wl.length) { g.innerHTML = R.empty('⭐', '暂无自选基金'); return; } g.innerHTML = S.wl.map(c => R.fcard(c, S.getEst(c))).join(''); Privacy.apply(); },
+
+    // 多账户渲染
+    renderAccounts() {
+        const bar = document.getElementById('accountBar'); if (!bar) return;
+        let html = '';
+        for (const [id, acct] of Object.entries(S.accounts)) {
+            const isActive = id === S.curAccount;
+            html += `<div class="account-tab ${isActive ? 'active' : ''}" onclick="App.switchAccount('${id}')">${acct.name}${acct.portfolio.length ? ` (${acct.portfolio.length})` : ''}</div>`;
+        }
+        html += `<button class="account-add" onclick="App.addAccount()">+ 新账户</button>`;
+        bar.innerHTML = html;
     },
 
-    // [P3] 修复持仓盈亏计算
+    switchAccount(id) { S.switchAccount(id); this.renderPort(); this.renderDash(); },
+    addAccount() { const name = prompt('输入账户名称：'); if (name?.trim()) { S.addAccount(name.trim()); this.renderPort(); this.toast('账户已创建', 'success'); } },
+
     renderPort() {
+        this.renderAccounts();
         const se = document.getElementById('pfSum'), tb = document.getElementById('pfTbl');
-        if (!S.pf.length) { se.innerHTML = ''; tb.innerHTML = R.empty('💼', '暂无持仓记录', { t: '添加持仓', o: "App.modalHold()" }); return; }
+        if (!S.pf.length) { se.innerHTML = ''; tb.innerHTML = R.empty('💼', '暂无持仓记录，点击"添加持仓"或"图片识别导入"开始', { t: '添加持仓', o: "App.modalHold()" }); return; }
         let tc = 0, tv = 0, td = 0;
         const rows = S.pf.map((h, i) => {
             const est = S.getEst(h.code);
-            // 当前净值：优先用实时估值，否则用成本价
             const currentNav = est ? parseFloat(est.gsz) : h.costPerShare;
-            const prevNav = est ? parseFloat(est.dwjz) : h.costPerShare;
             const shares = parseFloat(h.shares);
             const cost = shares * parseFloat(h.costPerShare);
             const value = shares * currentNav;
             const totalPnl = value - cost;
             const totalPnlPct = cost > 0 ? (totalPnl / cost * 100) : 0;
-            // [P3] 修正今日盈亏：用估算涨跌幅 × 当前市值
             const estChgPct = est ? parseFloat(est.gszzl) || 0 : 0;
-            const todayPnl = value * (estChgPct / (100 + estChgPct)); // 从当前市值反推今日盈亏
+            const todayPnl = value * (estChgPct / (100 + estChgPct));
             tc += cost; tv += value; td += todayPnl;
-            return { ...h, i, est, cn: currentNav, pn: prevNav, v: value, c: cost, p: totalPnl, pp: totalPnlPct, dc: todayPnl };
+            return { ...h, i, est, cn: currentNav, v: value, c: cost, p: totalPnl, pp: totalPnlPct, dc: todayPnl };
         });
         const tp = tv - tc;
         se.innerHTML = `
-            <div class="pf-card"><div class="pf-card-lbl">总市值</div><div class="pf-card-val">¥${U.fa(tv)}</div></div>
-            <div class="pf-card"><div class="pf-card-lbl">总成本</div><div class="pf-card-val">¥${U.fa(tc)}</div></div>
-            <div class="pf-card"><div class="pf-card-lbl">总盈亏</div><div class="pf-card-val ${U.gcl(tp)}">${tp >= 0 ? '+' : ''}¥${U.fa(tp)} <span style="font-size:.72rem;opacity:.7">(${U.fp(tc > 0 ? tp / tc * 100 : 0)})</span></div></div>
-            <div class="pf-card"><div class="pf-card-lbl">今日盈亏</div><div class="pf-card-val ${U.gcl(td)}">${td >= 0 ? '+' : ''}¥${U.fa(td)}</div></div>`;
-        tb.innerHTML = R.pfTable(rows, tc, tv, td, tp);
+            <div class="pf-card"><div class="pf-card-lbl">总市值</div><div class="pf-card-val">${Privacy.mask('¥' + U.fa(tv))}</div></div>
+            <div class="pf-card"><div class="pf-card-lbl">总成本</div><div class="pf-card-val">${Privacy.mask('¥' + U.fa(tc))}</div></div>
+            <div class="pf-card"><div class="pf-card-lbl">总盈亏</div><div class="pf-card-val ${U.gcl(tp)}">${Privacy.mask((tp >= 0 ? '+' : '') + '¥' + U.fa(tp))} <span style="font-size:.72rem;opacity:.7">(${U.fp(tc > 0 ? tp / tc * 100 : 0)})</span></div></div>
+            <div class="pf-card"><div class="pf-card-lbl">今日盈亏</div><div class="pf-card-val ${U.gcl(td)}">${Privacy.mask((td >= 0 ? '+' : '') + '¥' + U.fa(td))}</div></div>`;
+        tb.innerHTML = R.pfTable(rows);
+        Privacy.apply();
     },
 
-    togWl(code, name) {
-        if (S.isWl(code)) { S.rmWl(code); this.toast(`已取消自选: ${name || code}`, 'info'); }
-        else { S.addWl(code, name); this.toast(`已添加自选: ${name || code}`, 'success'); }
-        this.renderDash(); this.renderWatch();
-        if (this._curCode === code) this.view(code);
-    },
+    togWl(code, name) { if (S.isWl(code)) { S.rmWl(code); this.toast(`已取消自选: ${name || code}`, 'info'); } else { S.addWl(code, name); this.toast(`已添加自选: ${name || code}`, 'success'); } this.renderDash(); this.renderWatch(); if (this._curCode === code) this.view(code); },
 
-    // [P10] 添加持仓（支持手动输入日期）
     modalHold(code) {
         document.getElementById('mBody').innerHTML = `<div class="modal-title">添加持仓</div>
             <div class="form-grp"><label class="form-lbl">基金代码</label><input class="input" id="hCode" placeholder="请输入6位基金代码" value="${code || ''}"></div>
-            <div class="form-grp"><label class="form-lbl">基金名称</label><input class="input" id="hName" placeholder="自动识别，也可手动输入"></div>
+            <div class="form-grp"><label class="form-lbl">基金名称</label><input class="input" id="hName" placeholder="自动识别"></div>
             <div class="form-grp"><label class="form-lbl">持有份额</label><input type="number" class="input" id="hShares" placeholder="请输入持有份额" step="0.01"></div>
             <div class="form-grp"><label class="form-lbl">成本净值（每份）</label><input type="number" class="input" id="hCost" placeholder="请输入买入时的净值" step="0.0001"></div>
             <div class="form-grp"><label class="form-lbl">买入日期</label><input type="date" class="input" id="hDate" value="${new Date().toISOString().slice(0, 10)}"></div>
             <div class="modal-acts"><button class="btn" onclick="App.closeM()">取消</button><button class="btn btn-pri" onclick="App.addHold()">确认添加</button></div>`;
         document.getElementById('mBg').classList.add('open');
-        // 自动填充基金名称
         const codeInput = document.getElementById('hCode');
         const nameInput = document.getElementById('hName');
-        const autoFill = () => {
-            const c = codeInput.value.trim();
-            const f = API._list?.find(x => x.code === c);
-            if (f) nameInput.value = f.name;
-        };
-        codeInput.addEventListener('blur', autoFill);
-        codeInput.addEventListener('input', autoFill);
+        codeInput.addEventListener('blur', () => { const c = codeInput.value.trim(); const f = API._list?.find(x => x.code === c); if (f) nameInput.value = f.name; });
     },
 
-    async addHold() {
-        const code = document.getElementById('hCode').value.trim(),
-              name = document.getElementById('hName').value.trim(),
-              shares = parseFloat(document.getElementById('hShares').value),
-              cost = parseFloat(document.getElementById('hCost').value),
+    addHold() {
+        const code = document.getElementById('hCode').value.trim(), name = document.getElementById('hName').value.trim(),
+              shares = parseFloat(document.getElementById('hShares').value), cost = parseFloat(document.getElementById('hCost').value),
               date = document.getElementById('hDate').value;
         if (!code || code.length !== 6) { this.toast('请输入正确的6位基金代码', 'error'); return; }
         if (!shares || shares <= 0) { this.toast('请输入正确的份额', 'error'); return; }
@@ -1432,67 +770,156 @@ const App = {
         S.addPf({ code, name: nm, shares, costPerShare: cost, addedDate: date || new Date().toISOString() });
         S.addWl(code, nm);
         this.closeM(); this.renderDash(); this.renderPort(); this.renderWatch();
-        this.toast(`已添加持仓: ${nm}`, 'success');
-        this.refOne(code);
+        this.toast(`已添加持仓: ${nm}`, 'success'); this.refOne(code);
     },
 
-    // [P10] 编辑持仓
     editHold(i) {
-        const h = S.pf[i];
-        if (!h) return;
+        const h = S.pf[i]; if (!h) return;
         document.getElementById('mBody').innerHTML = `<div class="modal-title">编辑持仓</div>
             <div class="form-grp"><label class="form-lbl">基金代码</label><input class="input" value="${h.code}" disabled></div>
             <div class="form-grp"><label class="form-lbl">基金名称</label><input class="input" id="eName" value="${h.name || ''}"></div>
             <div class="form-grp"><label class="form-lbl">持有份额</label><input type="number" class="input" id="eShares" value="${h.shares}" step="0.01"></div>
-            <div class="form-grp"><label class="form-lbl">成本净值（每份）</label><input type="number" class="input" id="eCost" value="${h.costPerShare}" step="0.0001"></div>
+            <div class="form-grp"><label class="form-lbl">成本净值</label><input type="number" class="input" id="eCost" value="${h.costPerShare}" step="0.0001"></div>
             <div class="modal-acts"><button class="btn" onclick="App.closeM()">取消</button><button class="btn btn-pri" onclick="App.saveEdit(${i})">保存</button></div>`;
         document.getElementById('mBg').classList.add('open');
     },
 
-    saveEdit(i) {
-        const name = document.getElementById('eName').value.trim(),
-              shares = parseFloat(document.getElementById('eShares').value),
-              cost = parseFloat(document.getElementById('eCost').value);
-        if (!shares || shares <= 0) { this.toast('请输入正确的份额', 'error'); return; }
-        if (!cost || cost <= 0) { this.toast('请输入正确的成本净值', 'error'); return; }
-        S.updatePf(i, { name, shares, costPerShare: cost });
-        this.closeM(); this.renderDash(); this.renderPort();
-        this.toast('持仓已更新', 'success');
+    saveEdit(i) { const name = document.getElementById('eName').value.trim(), shares = parseFloat(document.getElementById('eShares').value), cost = parseFloat(document.getElementById('eCost').value); if (!shares || shares <= 0 || !cost || cost <= 0) { this.toast('请输入正确数值', 'error'); return; } S.updatePf(i, { name, shares, costPerShare: cost }); this.closeM(); this.renderDash(); this.renderPort(); this.toast('持仓已更新', 'success'); },
+    rmPf(i) { if (confirm('确定删除此持仓？')) { S.rmPf(i); this.renderPort(); this.renderDash(); this.toast('持仓已删除', 'info'); } },
+
+    // ========== 图片识别导入 ==========
+    modalOcr() {
+        document.getElementById('mBody').innerHTML = `<div class="modal-title">📷 图片识别导入持仓</div>
+            <div class="ocr-zone" id="ocrZone" onclick="document.getElementById('ocrFile').click()">
+                <div class="ocr-icon">📸</div>
+                <div class="ocr-txt">点击上传或拖拽持仓截图<br><span style="font-size:.72rem">支持养基宝、天天基金、支付宝等持仓截图</span></div>
+            </div>
+            <input type="file" id="ocrFile" accept="image/*" style="display:none" onchange="App.handleOcr(event)">
+            <div id="ocrResult"></div>
+            <div class="modal-acts"><button class="btn" onclick="App.closeM()">关闭</button></div>`;
+        document.getElementById('mBg').classList.add('open');
+        // 拖拽支持
+        const zone = document.getElementById('ocrZone');
+        zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('dragover'); });
+        zone.addEventListener('dragleave', () => zone.classList.remove('dragover'));
+        zone.addEventListener('drop', e => { e.preventDefault(); zone.classList.remove('dragover'); if (e.dataTransfer.files.length) { const fileInput = document.getElementById('ocrFile'); const dt = new DataTransfer(); dt.items.add(e.dataTransfer.files[0]); fileInput.files = dt.files; this.handleOcr({ target: fileInput }); } });
     },
 
-    rmPf(i) { if (confirm('确定删除此持仓记录？')) { S.rmPf(i); this.renderPort(); this.renderDash(); this.toast('持仓已删除', 'info'); } },
+    async handleOcr(event) {
+        const file = event.target.files?.[0]; if (!file) return;
+        const apiKey = localStorage.getItem('mm_mimo_key');
+        if (!apiKey) { this.toast('请先在设置中配置 MiMo API Key', 'error'); return; }
+
+        const resultDiv = document.getElementById('ocrResult');
+        resultDiv.innerHTML = '<div class="ld"><div class="ld-spin"></div><div style="margin-left:12px;font-size:.82rem;color:var(--text-muted)">正在识别图片...</div></div>';
+
+        try {
+            // 读取图片为base64
+            const base64 = await new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            });
+
+            // 调用MiMo API
+            const response = await fetch('https://api.xiaomimimo.com/v1/chat/completions', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${apiKey}` },
+                body: JSON.stringify({
+                    model: 'mimo-v2.5',
+                    messages: [{
+                        role: 'user',
+                        content: [
+                            { type: 'image_url', image_url: { url: base64 } },
+                            { type: 'text', text: '请从这张基金持仓截图中提取所有基金信息。返回JSON数组格式，每个元素包含：code(6位基金代码)、name(基金名称)、shares(持有份额数字)、cost(成本净值数字)、profit(盈亏金额数字)、chg(涨跌幅百分比数字)。只返回JSON数组，不要其他文字。如果某个字段看不到就返回null。' }
+                        ]
+                    }],
+                    max_tokens: 4096
+                })
+            });
+
+            if (!response.ok) throw new Error(`API请求失败: ${response.status}`);
+            const data = await response.json();
+            const content = data.choices?.[0]?.message?.content || '';
+
+            // 解析JSON
+            let funds = [];
+            try {
+                const jsonMatch = content.match(/\[[\s\S]*\]/);
+                if (jsonMatch) funds = JSON.parse(jsonMatch[0]);
+            } catch(e) { throw new Error('无法解析识别结果'); }
+
+            if (!funds.length) { resultDiv.innerHTML = '<div style="text-align:center;color:var(--text-muted);padding:20px">未识别到基金信息，请确认截图清晰</div>'; return; }
+
+            // 显示识别结果
+            this._ocrResults = funds;
+            resultDiv.innerHTML = `<div style="font-size:.82rem;color:var(--text-secondary);margin-bottom:10px">识别到 ${funds.length} 只基金，请勾选要导入的：</div>
+                <div class="ocr-result">${funds.map((f, i) => `<div class="ocr-item">
+                    <input type="checkbox" class="ocr-check" id="ocr_${i}" checked>
+                    <div style="flex:1"><div style="font-weight:500">${f.name || '未知基金'}</div><div style="font-size:.72rem;color:var(--text-muted)">${f.code || '无代码'} · 份额: ${f.shares || '--'} · 成本: ${f.cost || '--'}</div></div>
+                </div>`).join('')}</div>
+                <div class="modal-acts" style="margin-top:12px">
+                    <button class="btn" onclick="App.closeM()">取消</button>
+                    <button class="btn btn-pri" onclick="App.importOcr()">导入选中</button>
+                </div>`;
+
+        } catch(e) {
+            resultDiv.innerHTML = `<div style="text-align:center;color:var(--gain);padding:20px">识别失败: ${e.message}</div>`;
+        }
+    },
+
+    importOcr() {
+        const funds = this._ocrResults; if (!funds?.length) return;
+        let imported = 0;
+        funds.forEach((f, i) => {
+            const cb = document.getElementById('ocr_' + i);
+            if (!cb?.checked) return;
+            if (!f.code || !f.shares || !f.cost) return;
+            const code = String(f.code).replace(/\D/g, '').padStart(6, '0');
+            if (code.length !== 6) return;
+            const name = f.name || API._list?.find(x => x.code === code)?.name || '未知基金';
+            S.addPf({ code, name, shares: parseFloat(f.shares), costPerShare: parseFloat(f.cost), addedDate: new Date().toISOString() });
+            S.addWl(code, name);
+            imported++;
+        });
+        this.closeM(); this.renderDash(); this.renderPort(); this.renderWatch();
+        this.toast(`成功导入 ${imported} 只基金`, 'success');
+        // 刷新估值
+        S.pf.forEach(h => this.refOne(h.code));
+    },
+
+    // ========== 流入榜 ==========
+    async loadRank() {
+        const body = document.getElementById('rankBody');
+        body.innerHTML = '<div class="ld"><div class="ld-spin"></div></div>';
+        try {
+            // 使用天天基金排行数据
+            const data = await J.go('https://fundmobapi.eastmoney.com/FundMApi/FundInFlowList.aspx?SortColumn=SYL_1N&SortType=Desc&PageIndex=1&PageSize=20&deviceid=wap&plat=Wap&product=EFund&version=2.0.0', 'cb');
+            if (data?.Datas?.length) {
+                const items = data.Datas.map(item => ({ code: item.FCODE, name: item.SHORTNAME, type: item.FTYPE, chg_1y: item.SYL_1Y, chg_3m: item.SYL_3Y, chg_1m: item.SYL_1Y }));
+                body.innerHTML = `<div class="rank-list">${items.map((item, i) => R.rankItem(item, i)).join('')}</div>`;
+            } else {
+                // 备用：按收益率排行
+                const data2 = await J.go('https://fundmobapi.eastmoney.com/FundMApi/FundRankList.aspx?SortColumn=SYL_1N&SortType=Desc&PageIndex=1&PageSize=20&MType=0&deviceid=wap&plat=Wap&product=EFund&version=2.0.0', 'cb');
+                if (data2?.Datas?.length) {
+                    const items = data2.Datas.map(item => ({ code: item.FCODE, name: item.SHORTNAME, type: item.FTYPE, chg_1y: item.SYL_1N, chg_3m: item.SYL_3Y, chg_1m: item.SYL_1Y }));
+                    body.innerHTML = `<div class="rank-list">${items.map((item, i) => R.rankItem(item, i)).join('')}</div>`;
+                } else {
+                    body.innerHTML = R.empty('📊', '暂无排行数据');
+                }
+            }
+        } catch(e) {
+            body.innerHTML = R.empty('❌', '加载失败: ' + e.message);
+        }
+    },
 
     closeM() { document.getElementById('mBg').classList.remove('open'); },
-
-    toast(msg, type = 'info') {
-        const box = document.getElementById('tBox'), t = document.createElement('div');
-        t.className = 'toast ' + type; t.textContent = msg; box.appendChild(t); setTimeout(() => t.remove(), 3000);
-    }
+    toast(msg, type = 'info') { const box = document.getElementById('tBox'), t = document.createElement('div'); t.className = 'toast ' + type; t.textContent = msg; box.appendChild(t); setTimeout(() => t.remove(), 3000); }
 };
 
-/* ====== [P15] PWA SERVICE WORKER ====== */
-if ('serviceWorker' in navigator) {
-    // 简单的内联service worker用于离线缓存
-    const swCode = `
-        const CACHE = 'maomao-v2';
-        const ASSETS = ['/'];
-        self.addEventListener('install', e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS))); self.skipWaiting(); });
-        self.addEventListener('activate', e => { e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== CACHE).map(k => caches.delete(k))))); self.skipWaiting(); });
-        self.addEventListener('fetch', e => {
-            if (e.request.url.includes('fund.eastmoney.com') || e.request.url.includes('jrj.com.cn') || e.request.url.includes('howbuy.com') || e.request.url.includes('push2.eastmoney.com')) {
-                // API请求：网络优先
-                e.respondWith(fetch(e.request).catch(() => caches.match(e.request)));
-            } else {
-                // 静态资源：缓存优先
-                e.respondWith(caches.match(e.request).then(r => r || fetch(e.request)));
-            }
-        });
-    `;
-    const blob = new Blob([swCode], { type: 'application/javascript' });
-    navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(() => {});
-}
+if ('serviceWorker' in navigator) { const swCode = `const C='maomao-v3';self.addEventListener('install',e=>{self.skipWaiting()});self.addEventListener('activate',e=>{self.clients.claim()});self.addEventListener('fetch',e=>{if(e.request.url.includes('fund.eastmoney.com')||e.request.url.includes('jrj.com.cn')||e.request.url.includes('push2.eastmoney.com')||e.request.url.includes('xiaomimimo.com')){e.respondWith(fetch(e.request).catch(()=>caches.match(e.request)))}else{e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request)))}})`; const blob = new Blob([swCode], { type: 'application/javascript' }); navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(() => {}); }
 
-/* ====== INIT ====== */
 document.addEventListener('DOMContentLoaded', () => App.init());
 </script>
 </body>
