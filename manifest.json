@@ -1,0 +1,16 @@
+{
+    "name": "猫猫基金宝",
+    "short_name": "猫猫基金宝",
+    "description": "实时基金估值工具，支持多源数据、分时走势、持仓管理",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#050810",
+    "theme_color": "#050810",
+    "icons": [
+        {
+            "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐱</text></svg>",
+            "sizes": "any",
+            "type": "image/svg+xml"
+        }
+    ]
+}
